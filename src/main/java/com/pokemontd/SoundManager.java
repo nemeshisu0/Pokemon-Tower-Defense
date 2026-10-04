@@ -189,4 +189,19 @@ public class SoundManager {
         }
         queueSound(samples);
     }
+
+    public static void playVictoryFanfare() {
+        if (muted || volume <= 0.001) return;
+        int numFrames = (int) (SAMPLE_RATE * 0.60);
+        short[] samples = new short[numFrames];
+        int step = numFrames / 5;
+        double[] freqs = {523.25, 659.25, 783.99, 1046.50, 1318.51}; // C5, E5, G5, C6, E6
+        for (int i = 0; i < numFrames; i++) {
+            int idx = Math.min(4, i / step);
+            double freq = freqs[idx];
+            double angle = 2.0 * Math.PI * i / (SAMPLE_RATE / freq);
+            samples[i] = (short) (Math.sin(angle) * 15000);
+        }
+        queueSound(samples);
+    }
 }

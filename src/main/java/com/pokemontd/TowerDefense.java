@@ -61,6 +61,8 @@ public class TowerDefense extends Application {
     final private Group pokedexMenu = new Group();
     final private Group settingsMenu = new Group();
     final private Group gameOverMenu = new Group();
+    final private Group victoryMenu = new Group();
+    private Label victoryStatsLabel;
 
     // Game Content & Responsive Wrapper
     final private Group gameContent = new Group();
@@ -302,12 +304,13 @@ public class TowerDefense extends Application {
         buildPokedexMenu();
         buildSettingsMenu();
         buildGameOverMenu();
+        buildVictoryMenu();
 
         // Wave Start handler
         startWaveButton.setOnAction(e -> startWave());
 
         // Setup Main Scalable Container with fixed-origin scaling
-        gameContent.getChildren().addAll(gameWindow, mainMenu, pokedexMenu, settingsMenu, gameOverMenu);
+        gameContent.getChildren().addAll(gameWindow, mainMenu, pokedexMenu, settingsMenu, gameOverMenu, victoryMenu);
         gameContent.getTransforms().add(gameScale);
         gameContent.setClip(new Rectangle(0, 0, WIDTH, HEIGHT));
         gameContent.setManaged(false); // Unmanaged so its scaled size does not cause parent resize loops
@@ -582,7 +585,9 @@ public class TowerDefense extends Application {
                 evt.consume();
             });
             entities.add(turret);
-            selectTurret(turret);
+            if (gameBot == null || !gameBot.isEnabled()) {
+                selectTurret(turret);
+            }
             updateLabels();
             return true;
         }
@@ -981,6 +986,83 @@ public class TowerDefense extends Application {
         gameOverMenu.setVisible(false);
     }
 
+    private void buildVictoryMenu() {
+        Rectangle victoryBackdrop = new Rectangle(WIDTH, HEIGHT);
+        victoryBackdrop.setFill(Color.rgb(0, 0, 0, 0.85));
+
+        VBox victoryBox = new VBox(12);
+        victoryBox.setAlignment(Pos.CENTER);
+        victoryBox.setTranslateX(WIDTH / 4.0 - 50);
+        victoryBox.setTranslateY(HEIGHT / 4.0 - 20);
+        victoryBox.setPrefWidth(WIDTH / 2.0 + 100);
+        victoryBox.setStyle("-fx-background-color: #161b22; -fx-padding: 22; -fx-background-radius: 12; "
+                          + "-fx-border-color: #f1c40f; -fx-border-width: 2.5; -fx-border-radius: 12; "
+                          + "-fx-effect: dropshadow(three-pass-box, rgba(241,196,15,0.4), 16, 0, 0, 4);");
+
+        Label crownLabel = new Label("🏆 CAMPIONE DELLA LEGA POKÉMON 🏆");
+        crownLabel.setTextFill(Color.rgb(241, 196, 15));
+        crownLabel.setStyle("-fx-font-size: 18px; -fx-font-weight: bold;");
+
+        Label victorySub = new Label("Hai sconfitto il Campione Blu e completato tutte le 64 Ondate!\nLivello massimo 65 raggiunto con successo!");
+        victorySub.setTextFill(Color.rgb(224, 230, 237));
+        victorySub.setStyle("-fx-font-size: 13px; -fx-text-alignment: center;");
+        victorySub.setWrapText(true);
+
+        victoryStatsLabel = new Label();
+        victoryStatsLabel.setTextFill(Color.rgb(46, 204, 113));
+        victoryStatsLabel.setStyle("-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-alignment: center; -fx-line-spacing: 4px;");
+
+        HBox btnBox = new HBox(12);
+        btnBox.setAlignment(Pos.CENTER);
+
+        Button restartButton = new Button("Rigioca dall'Inizio ↻");
+        restartButton.setStyle("-fx-font-size: 13px; -fx-padding: 8 16; -fx-background-color: #27ae60; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand;");
+        restartButton.setOnAction(e -> {
+            victoryMenu.setVisible(false);
+            restartGame();
+        });
+
+        Button exportBtn = new Button("Esporta Report 📊");
+        exportBtn.setStyle("-fx-font-size: 13px; -fx-padding: 8 16; -fx-background-color: #2980b9; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand;");
+        exportBtn.setOnAction(e -> {
+            telemetry.exportReports(entities.getTowerHealth(), entities.getMaxTowerHealth(), "VITTORIA_CAMPIONE");
+            updateLabels();
+        });
+
+        btnBox.getChildren().addAll(restartButton, exportBtn);
+
+        victoryBox.getChildren().addAll(crownLabel, victorySub, victoryStatsLabel, btnBox);
+        victoryMenu.getChildren().addAll(victoryBackdrop, victoryBox);
+        victoryMenu.setVisible(false);
+    }
+
+    private void showVictoryMenu() {
+        if (timeline != null) {
+            timeline.stop();
+        }
+        backdrop.setEffect(new BoxBlur());
+        mainMenu.setVisible(false);
+        gameOverMenu.setVisible(false);
+        int hp = entities.getTowerHealth();
+        int maxHp = entities.getMaxTowerHealth();
+        int turretsCount = entities.getTurrets().size();
+        int money = store.getMoney();
+        int cleanWaves = gameBot != null ? gameBot.getCleanWavesCount() : 0;
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("❤️ Salute Palestra Finale: ").append(hp).append(" / ").append(maxHp).append("\n");
+        sb.append("💰 Fondi Accumulati: $").append(money).append("\n");
+        sb.append("🌿 Difensori Schierati: ").append(turretsCount).append("\n");
+        sb.append("⭐ Ondate Senza Danni: ").append(cleanWaves).append(" / 64\n");
+        if (hp >= 5) {
+            sb.append("✅ Obiettivo Superato: Sopravvivenza con ≥ 5 HP (Residui: ").append(hp).append(" HP)!");
+        } else {
+            sb.append("⚠️ Vittoria al limite della resistenza!");
+        }
+        victoryStatsLabel.setText(sb.toString());
+        victoryMenu.setVisible(true);
+    }
+
     private void startWave() {
         gameOn = true;
         isPaused = false;
@@ -996,7 +1078,7 @@ public class TowerDefense extends Application {
         waveTime = 0;
         SoundManager.playWaveStart();
 
-        boolean isBoss = (level % 5 == 0);
+        boolean isBoss = (level % 5 == 0) || (level == 64);
         String bossName = "";
         if (isBoss) {
             Trainer b = entities.createBossTrainer(level);
@@ -1024,17 +1106,27 @@ public class TowerDefense extends Application {
 
                         if (gameOn) {
                             // Wave completed condition
-                            boolean isBossWave = (level % 5 == 0);
-                            int totalEnemies = isBossWave ? (3 + level) : (level == 1 ? 2 : (level == 2 ? 3 : Math.min(26, 2 + level * 2)));
+                            boolean isBossWave = (level % 5 == 0) || (level == 64);
+                            int totalEnemies = isBossWave ? (3 + Math.min(18, level / 3)) : (level == 1 ? 2 : (level == 2 ? 3 : Math.min(26, 2 + level * 2)));
                             if (spawned >= totalEnemies && entities.getTrainers().isEmpty()) {
                                 gameOn = false;
                                 int waveBonus = 35 + level * 15;
                                 store.spend(-waveBonus);
-                                SoundManager.playWaveStart();
                                 if (gameBot != null) {
                                     gameBot.onWaveCompleted(level);
                                 }
                                 telemetry.onWaveCompleted(level, store.getMoney(), entities.getTowerHealth(), entities.getMaxTowerHealth());
+
+                                if (level >= 64) {
+                                    level = 65; // Livello massimo 65 raggiunto: VITTORIA!
+                                    SoundManager.playVictoryFanfare();
+                                    telemetry.exportReports(entities.getTowerHealth(), entities.getMaxTowerHealth(), "VITTORIA_CAMPIONE");
+                                    showVictoryMenu();
+                                    updateLabels();
+                                    return;
+                                }
+
+                                SoundManager.playWaveStart();
                                 level++;
                                 spawned = 0;
                                 waveTime = 0;
@@ -1080,9 +1172,12 @@ public class TowerDefense extends Application {
         }
 
         int alive = entities.getTrainers().size();
-        boolean isBossWave = (level % 5 == 0);
-        int totalEnemies = isBossWave ? (3 + level) : (level == 1 ? 2 : (level == 2 ? 3 : Math.min(26, 2 + level * 2)));
-        if (isBossWave) {
+        boolean isBossWave = (level % 5 == 0) || (level == 64);
+        int totalEnemies = isBossWave ? (3 + Math.min(18, level / 3)) : (level == 1 ? 2 : (level == 2 ? 3 : Math.min(26, 2 + level * 2)));
+        if (level >= 65) {
+            waveStatusLabel.setText("🏆 CAMPIONE (Lv. 65)");
+            waveStatusLabel.setTextFill(Color.rgb(46, 204, 113));
+        } else if (isBossWave) {
             waveStatusLabel.setText("👑 BOSS " + level + " (" + alive + "/" + totalEnemies + ")");
             waveStatusLabel.setTextFill(Color.rgb(241, 196, 15));
         } else {
@@ -1094,7 +1189,9 @@ public class TowerDefense extends Application {
             rightPanelGymHp.setText("❤️ Salute: " + hp + " / " + maxHp);
         }
         if (leftPanelStatus != null) {
-            if (gameOn) {
+            if (level >= 65) {
+                leftPanelStatus.setText("🏆 Vittoria! Campione di Kanto");
+            } else if (gameOn) {
                 leftPanelStatus.setText(isBossWave ? "👑 BATTAGLIA CAPOPALESTRA!" : "Battaglia in corso...");
             } else {
                 leftPanelStatus.setText("In attesa dell'ondata " + level);
@@ -1140,6 +1237,8 @@ public class TowerDefense extends Application {
         pauseOverlay.setVisible(false);
         pauseText.setVisible(false);
         deselectTurret();
+        gameOverMenu.setVisible(false);
+        victoryMenu.setVisible(false);
 
         level = 1;
         spawned = 0;
@@ -1178,8 +1277,8 @@ public class TowerDefense extends Application {
         waveTime++;
         updateLabels();
 
-        boolean isBossWave = (level % 5 == 0);
-        int totalEnemies = isBossWave ? (3 + level) : (level == 1 ? 2 : (level == 2 ? 3 : Math.min(26, 2 + level * 2)));
+        boolean isBossWave = (level % 5 == 0) || (level == 64);
+        int totalEnemies = isBossWave ? (3 + Math.min(18, level / 3)) : (level == 1 ? 2 : (level == 2 ? 3 : Math.min(26, 2 + level * 2)));
         int spawnInterval = Math.max(70, 200 - level * 6);
 
         // Bot AI decision during combat

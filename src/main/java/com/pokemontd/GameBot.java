@@ -294,6 +294,7 @@ public class GameBot {
     }
 
     private boolean placeNextBestTurret(int currentLevel) {
+        // First check strategic priority targets
         for (Coord target : STRATEGIC_TARGETS) {
             Coord validTile = grassMap.isPlaceable(target);
             if (validTile.getX() > 0) {
@@ -304,6 +305,17 @@ public class GameBot {
                         addLog("[W" + currentLevel + "] 🌿 Piazzata Torretta #" + num + " a (" + validTile.getX() + "," + validTile.getY() + ")");
                         return true;
                     }
+                }
+            }
+        }
+
+        // When strategic targets are full, expand across the rest of the grass map!
+        for (Coord tile : grassMap.getAllPlaceableTiles()) {
+            if (!entities.isLocationOccupied(tile.getX(), tile.getY(), 16.0)) {
+                if (game.placeTurret(tile)) {
+                    int num = entities.getTurrets().size();
+                    addLog("[W" + currentLevel + "] 🌿 Espansione Torretta #" + num + " a (" + tile.getX() + "," + tile.getY() + ")");
+                    return true;
                 }
             }
         }

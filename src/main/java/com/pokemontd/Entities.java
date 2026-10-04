@@ -100,7 +100,7 @@ public class Entities {
     }
 
     public Trainer createBossTrainer(int level) {
-        int bossTier = Math.max(1, level / 5);
+        int bossTier = (level >= 64) ? 13 : Math.max(1, level / 5);
         String name;
         PokemonType type;
         int hp;
@@ -109,7 +109,7 @@ public class Entities {
             case 1: // Wave 5
                 name = "Brock (Capopalestra)";
                 type = PokemonType.ROCK;
-                hp = 280;
+                hp = 210; // Was 280 (leaked by 28 HP, 210 ensures clean defeat)
                 break;
             case 2: // Wave 10
                 name = "Misty (Capopalestra)";
@@ -124,13 +124,53 @@ public class Entities {
             case 4: // Wave 20
                 name = "Erika (Capopalestra)";
                 type = PokemonType.GRASS;
-                hp = 3600;
+                hp = 3200;
                 break;
-            case 5: // Wave 25+
-            default:
+            case 5: // Wave 25
+                name = "Koga (Capopalestra)";
+                type = PokemonType.GRASS;
+                hp = 4200;
+                break;
+            case 6: // Wave 30
+                name = "Sabrina (Capopalestra)";
+                type = PokemonType.NORMAL;
+                hp = 5400;
+                break;
+            case 7: // Wave 35
+                name = "Blaine (Capopalestra)";
+                type = PokemonType.FIRE;
+                hp = 6800;
+                break;
+            case 8: // Wave 40
                 name = "Giovanni (Capo Rocket)";
                 type = PokemonType.ROCK;
-                hp = (int) (6500 + (level - 25) * 450);
+                hp = 8400;
+                break;
+            case 9: // Wave 45
+                name = "Lorelei (Superquattro)";
+                type = PokemonType.WATER;
+                hp = 10500;
+                break;
+            case 10: // Wave 50
+                name = "Bruno (Superquattro)";
+                type = PokemonType.ROCK;
+                hp = 12500;
+                break;
+            case 11: // Wave 55
+                name = "Agatha (Superquattro)";
+                type = PokemonType.GRASS;
+                hp = 15000;
+                break;
+            case 12: // Wave 60
+                name = "Lance (Superquattro)";
+                type = PokemonType.FIRE;
+                hp = 17500;
+                break;
+            case 13: // Wave 64 Boss Finale
+            default:
+                name = "Blue (Campione Supremo)";
+                type = PokemonType.NORMAL;
+                hp = 20000;
                 break;
         }
 

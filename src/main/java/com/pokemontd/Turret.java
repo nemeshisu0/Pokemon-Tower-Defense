@@ -61,8 +61,10 @@ public class Turret extends Stationary {
 
     public void setAssignedPokemon(int index) {
         if (roster != null && index >= 0 && index < roster.size()) {
-            assignedIndex = index;
-            updateBadge();
+            if (this.assignedIndex != index) {
+                assignedIndex = index;
+                updateBadge();
+            }
         }
     }
 

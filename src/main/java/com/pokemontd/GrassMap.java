@@ -68,6 +68,15 @@ public class GrassMap {
 		return new Coord(-1000, 0);
 	}
 
+	public ArrayList<Coord> getAllPlaceableTiles() {
+		ArrayList<Coord> all = new ArrayList<Coord>();
+		all.addAll(grass1);
+		all.addAll(grass2);
+		all.addAll(grass3);
+		all.addAll(grass4);
+		return all;
+	}
+
 	public boolean isInside(Moveable m) {
 		//
 		return true;
