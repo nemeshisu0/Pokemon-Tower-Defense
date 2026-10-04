@@ -129,8 +129,18 @@ public class Entities {
         return new Trainer("/Resource/gymleader.png", 202, 800, hp, name, type, 1, true, level);
     }
 
+    public boolean isLocationOccupied(int x, int y, double minDistance) {
+        for (Turret t : turrets) {
+            if (Math.hypot(t.getX() - x, t.getY() - y) < minDistance) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public Trainer randomTrainer(int level) {
-        int rand = (int) (Math.random() * 6);
+        int maxTypeIndex = (level == 1) ? 2 : (level == 2 ? 3 : (level == 3 ? 5 : 6));
+        int rand = (int) (Math.random() * maxTypeIndex);
         String pic;
         String name;
         PokemonType type;
@@ -142,39 +152,39 @@ public class Entities {
                 pic = "/Resource/trainer1.png";
                 name = "Pescatore";
                 type = PokemonType.WATER;
-                hp = (int) (14 + 7 * Math.pow(level, 1.25));
+                hp = (level == 1) ? 9 : (level == 2 ? 13 : (int) (8 + 5 * Math.pow(level, 1.22)));
                 break;
             case 1:
+                pic = "/Resource/trainer5.png";
+                name = "Fantallenatore";
+                type = PokemonType.NORMAL;
+                hp = (level == 1) ? 10 : (level == 2 ? 14 : (int) (9 + 6 * Math.pow(level, 1.22)));
+                break;
+            case 2:
                 pic = "/Resource/trainer2.png";
                 name = "Centauro";
                 type = PokemonType.FIRE;
-                hp = (int) (18 + 9 * Math.pow(level, 1.28));
+                hp = (level <= 2) ? 14 : (int) (11 + 7 * Math.pow(level, 1.24));
                 break;
-            case 2:
+            case 3:
                 pic = "/Resource/trainer3.png";
                 name = "Pigliamosche";
                 type = PokemonType.GRASS;
-                hp = (int) (10 + 5 * Math.pow(level, 1.22));
+                hp = (int) (6 + 4 * Math.pow(level, 1.18));
                 speed = 2; // Fast runner scout!
                 break;
-            case 3:
+            case 4:
                 pic = "/Resource/trainer4.png";
                 name = "Marinaio";
                 type = PokemonType.WATER;
-                hp = (int) (22 + 10 * Math.pow(level, 1.30));
-                break;
-            case 4:
-                pic = "/Resource/trainer5.png";
-                name = "Montanaro";
-                type = PokemonType.ROCK; // Rock armor resists Rattata!
-                hp = (int) (24 + 11 * Math.pow(level, 1.30));
+                hp = (int) (14 + 7 * Math.pow(level, 1.25));
                 break;
             case 5:
             default:
                 pic = "/Resource/trainer5.png";
-                name = "Fantallenatore";
-                type = PokemonType.NORMAL;
-                hp = (int) (16 + 8 * Math.pow(level, 1.25));
+                name = "Montanaro";
+                type = PokemonType.ROCK; // Rock armor resists Rattata!
+                hp = (int) (16 + 8 * Math.pow(level, 1.26));
                 break;
         }
 

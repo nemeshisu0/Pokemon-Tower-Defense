@@ -20,7 +20,7 @@ public class Store {
         inventory.add(new Pokemon("Charizard", "/Resource/charizard.png", PokemonType.FIRE, 75, 1000, 135, 120, "Lanciafiamme devastante ad ampio raggio. 45% scottatura. Devasta Erba (2x)!"));
 
         unlockedPokemon.clear();
-        unlockedPokemon.add(new Pokemon("Rattata", "/Resource/rattata.png", PokemonType.NORMAL, 4, 0, 75, 85, "Attacco rapido base. Buono all'inizio, ma debole (-40%) contro Roccia."));
+        unlockedPokemon.add(new Pokemon("Rattata", "/Resource/rattata.png", PokemonType.NORMAL, 5, 0, 85, 60, "Attacco rapido base. Veloce ed efficace all'inizio, ma debole (-40%) contro Roccia."));
     }
 
     public void reset() {
