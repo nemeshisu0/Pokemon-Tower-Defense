@@ -92,9 +92,9 @@ public class TowerDefense extends Application {
     private Rectangle pauseOverlay;
     private Label pauseText;
 
-    // Autonomous AI Bot & Telemetry
-    private final GameTelemetry telemetry = new GameTelemetry();
-    private GameBot gameBot;
+    // Autonomous AI Bot & Telemetry (Disabled in Player Edition)
+    private final GameTelemetry telemetry = null;
+    private GameBot gameBot = null;
     private Button botHudBtn;
     private Button rightPanelBotToggleBtn;
     private Button rightPanelSpeedBtn;
@@ -113,8 +113,8 @@ public class TowerDefense extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         this.primaryStage = stage;
-        this.entities.setTelemetry(telemetry);
-        this.gameBot = new GameBot(this, store, entities, telemetry);
+        this.entities.setTelemetry(null);
+        this.gameBot = null;
 
         // GameWindow Backdrop
         backdrop = new Group(background.getImageView(), tower.getImageView());
@@ -197,10 +197,6 @@ public class TowerDefense extends Application {
         speedBtn.setStyle("-fx-font-size: 10px; -fx-padding: 2 6; -fx-background-color: #34495e; -fx-text-fill: white;");
         speedBtn.setOnAction(e -> toggleSpeed());
 
-        botHudBtn = new Button("🤖 AI: OFF");
-        botHudBtn.setStyle("-fx-font-size: 10px; -fx-padding: 2 6; -fx-background-color: #2c3e50; -fx-text-fill: #bdc3c7; -fx-font-weight: bold;");
-        botHudBtn.setOnAction(e -> toggleBot());
-
         muteBtn = new Button("🔊");
         muteBtn.setStyle("-fx-font-size: 10px; -fx-padding: 2 6; -fx-background-color: #34495e; -fx-text-fill: white;");
         muteBtn.setOnAction(e -> {
@@ -212,7 +208,7 @@ public class TowerDefense extends Application {
         settingsBtn.setStyle("-fx-font-size: 10px; -fx-padding: 2 6; -fx-background-color: #34495e; -fx-text-fill: white;");
         settingsBtn.setOnAction(e -> openSettings());
 
-        HBox btnGroup = new HBox(4, pauseBtn, speedBtn, botHudBtn, muteBtn, settingsBtn);
+        HBox btnGroup = new HBox(4, pauseBtn, speedBtn, muteBtn, settingsBtn);
         btnGroup.setAlignment(Pos.CENTER_RIGHT);
         HBox.setHgrow(btnGroup, Priority.ALWAYS);
 
@@ -432,96 +428,61 @@ public class TowerDefense extends Application {
     }
 
     private VBox buildRightSidebar() {
-        VBox sidebar = new VBox(10);
+        VBox sidebar = new VBox(12);
         sidebar.setPrefWidth(265);
-        sidebar.setPadding(new Insets(14, 12, 14, 12));
+        sidebar.setPadding(new Insets(16, 14, 16, 14));
         sidebar.setStyle("-fx-background-color: #161b22; -fx-border-color: #30363d; -fx-border-width: 0 0 0 1;");
         sidebar.setAlignment(Pos.TOP_LEFT);
 
-        Label header = new Label("AI BOT & BILANCIAMENTO");
+        Label header = new Label("PANNELLO ALLENATORE");
         header.setStyle("-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #58a6ff;");
-
-        // Bot Card
-        VBox botCard = new VBox(6);
-        botCard.setPadding(new Insets(8));
-        botCard.setStyle("-fx-background-color: #0d1117; -fx-background-radius: 6; -fx-border-color: #30363d; -fx-border-radius: 6;");
-
-        rightPanelBotToggleBtn = new Button("🤖 Attiva Bot AI (Auto-Play)");
-        rightPanelBotToggleBtn.setMaxWidth(Double.MAX_VALUE);
-        rightPanelBotToggleBtn.setStyle("-fx-font-size: 11px; -fx-background-color: #27ae60; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 6 10;");
-        rightPanelBotToggleBtn.setOnAction(e -> toggleBot());
-
-        rightPanelSpeedBtn = new Button("⏩ Velocità: 1x (Normale)");
-        rightPanelSpeedBtn.setMaxWidth(Double.MAX_VALUE);
-        rightPanelSpeedBtn.setStyle("-fx-font-size: 10px; -fx-background-color: #21262d; -fx-text-fill: #c9d1d9; -fx-border-color: #30363d; -fx-padding: 4 8;");
-        rightPanelSpeedBtn.setOnAction(e -> toggleSpeed());
-
-        botStatusLabel = new Label("Stato: Bot in standby");
-        botStatusLabel.setStyle("-fx-font-size: 10px; -fx-text-fill: #8b949e;");
-        botStatusLabel.setWrapText(true);
-
-        botDpsLabel = new Label("⚡ DPS Stimato: ~0");
-        botDpsLabel.setStyle("-fx-font-size: 10px; -fx-text-fill: #f1c40f; -fx-font-weight: bold;");
-
-        botWavesLabel = new Label("⭐ Ondate Perfette: 0");
-        botWavesLabel.setStyle("-fx-font-size: 10px; -fx-text-fill: #2ecc71;");
-
-        botDamageLabel = new Label("❤️ Danni Subiti Palestra: 0");
-        botDamageLabel.setStyle("-fx-font-size: 10px; -fx-text-fill: #e74c3c;");
-
-        botBalanceLabel = new Label("⚖️ Da valutare");
-        botBalanceLabel.setStyle("-fx-font-size: 10px; -fx-text-fill: #58a6ff; -fx-font-weight: bold;");
-
-        Label logsTitle = new Label("LOG DECISIONI BOT:");
-        logsTitle.setStyle("-fx-font-size: 9px; -fx-font-weight: bold; -fx-text-fill: #7d8590; -fx-padding: 4 0 0 0;");
-
-        botLogBox = new VBox(2);
-        Label initLog = new Label("AI in standby");
-        initLog.setStyle("-fx-font-size: 9px; -fx-text-fill: #8b949e; -fx-font-family: monospace;");
-        botLogBox.getChildren().add(initLog);
-
-        Button exportReportBtn = new Button("📄 Esporta Report (.md/.json)");
-        exportReportBtn.setMaxWidth(Double.MAX_VALUE);
-        exportReportBtn.setStyle("-fx-font-size: 10px; -fx-background-color: #21262d; -fx-text-fill: #58a6ff; -fx-border-color: #30363d; -fx-padding: 4 8; -fx-font-weight: bold;");
-        exportReportBtn.setOnAction(e -> {
-            telemetry.exportReports(entities.getTowerHealth(), entities.getMaxTowerHealth(), gameOn ? "IN_CORSO" : "ATTESA");
-            updateLabels();
-        });
-
-        botExportLabel = new Label("📁 Report: balance_report.md");
-        botExportLabel.setStyle("-fx-font-size: 9px; -fx-text-fill: #7d8590;");
-        botExportLabel.setWrapText(true);
-
-        botCard.getChildren().addAll(
-            rightPanelBotToggleBtn,
-            rightPanelSpeedBtn,
-            botStatusLabel,
-            botDpsLabel,
-            botWavesLabel,
-            botDamageLabel,
-            botBalanceLabel,
-            exportReportBtn,
-            botExportLabel,
-            logsTitle,
-            botLogBox
-        );
 
         // Gym Leader Live Status Card
         VBox gymCard = new VBox(6);
-        gymCard.setPadding(new Insets(8));
+        gymCard.setPadding(new Insets(10));
         gymCard.setStyle("-fx-background-color: #0d1117; -fx-background-radius: 6; -fx-border-color: #30363d; -fx-border-radius: 6;");
 
         Label gymTitle = new Label("DIFESA PALESTRA:");
         gymTitle.setStyle("-fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: #8b949e;");
 
         rightPanelGymHp = new Label("❤️ Salute: 25 / 25");
-        rightPanelGymHp.setStyle("-fx-font-size: 12px; -fx-text-fill: #2ecc71; -fx-font-weight: bold;");
+        rightPanelGymHp.setStyle("-fx-font-size: 13px; -fx-text-fill: #2ecc71; -fx-font-weight: bold;");
 
         gymCard.getChildren().addAll(gymTitle, rightPanelGymHp);
 
+        // Tactical Tips Card
+        VBox tipsCard = new VBox(6);
+        tipsCard.setPadding(new Insets(10));
+        tipsCard.setStyle("-fx-background-color: #0d1117; -fx-background-radius: 6; -fx-border-color: #30363d; -fx-border-radius: 6;");
+
+        Label tipsTitle = new Label("CONSIGLI TATTICI:");
+        tipsTitle.setStyle("-fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: #8b949e;");
+
+        Label t1 = new Label("📖 Pokédex: Sblocca nuovi Pokémon per contrastare i tipi nemici.");
+        t1.setStyle("-fx-font-size: 10px; -fx-text-fill: #c9d1d9;");
+        t1.setWrapText(true);
+
+        Label t2 = new Label("⚡ Pikachu infligge Paralisi e dimezza la velocità dei nemici.");
+        t2.setStyle("-fx-font-size: 10px; -fx-text-fill: #f1c40f;");
+        t2.setWrapText(true);
+
+        Label t3 = new Label("💧 Squirtle è super-efficace contro Roccia e Fuoco.");
+        t3.setStyle("-fx-font-size: 10px; -fx-text-fill: #3498db;");
+        t3.setWrapText(true);
+
+        Label t4 = new Label("🔥 Charizard applica Scottatura con danni massicci.");
+        t4.setStyle("-fx-font-size: 10px; -fx-text-fill: #e74c3c;");
+        t4.setWrapText(true);
+
+        Label t5 = new Label("👑 Al Livello 64 affronterai il Campione Supremo Blue per vincere!");
+        t5.setStyle("-fx-font-size: 10px; -fx-font-weight: bold; -fx-text-fill: #f1c40f;");
+        t5.setWrapText(true);
+
+        tipsCard.getChildren().addAll(tipsTitle, t1, t2, t3, t4, t5);
+
         // Shortcuts Card
-        VBox controlsCard = new VBox(3);
-        controlsCard.setPadding(new Insets(8));
+        VBox controlsCard = new VBox(5);
+        controlsCard.setPadding(new Insets(10));
         controlsCard.setStyle("-fx-background-color: #0d1117; -fx-background-radius: 6; -fx-border-color: #30363d; -fx-border-radius: 6;");
 
         Label ctrlTitle = new Label("COMANDI RAPIDI:");
@@ -529,16 +490,18 @@ public class TowerDefense extends Application {
 
         Label c1 = new Label("⌨ F11: Schermo Intero");
         c1.setStyle("-fx-font-size: 9px; -fx-text-fill: #c9d1d9;");
-        Label c2 = new Label("⌨ Spazio / P: Pausa");
+        Label c2 = new Label("⌨ Spazio / P: Pausa / Riprendi");
         c2.setStyle("-fx-font-size: 9px; -fx-text-fill: #c9d1d9;");
         Label c3 = new Label("🖱 Click Erba: Piazza Torretta");
         c3.setStyle("-fx-font-size: 9px; -fx-text-fill: #c9d1d9;");
-        Label c4 = new Label("🖱 Click Cespuglio: Info / Cambia");
+        Label c4 = new Label("🖱 Click Torretta: Cambia Pokémon");
         c4.setStyle("-fx-font-size: 9px; -fx-text-fill: #c9d1d9;");
+        Label c5 = new Label("⏩ Pulsante Velocità: 1x / 2x / 3x");
+        c5.setStyle("-fx-font-size: 9px; -fx-text-fill: #c9d1d9;");
 
-        controlsCard.getChildren().addAll(ctrlTitle, c1, c2, c3, c4);
+        controlsCard.getChildren().addAll(ctrlTitle, c1, c2, c3, c4, c5);
 
-        sidebar.getChildren().addAll(header, botCard, gymCard, controlsCard);
+        sidebar.getChildren().addAll(header, gymCard, tipsCard, controlsCard);
         return sidebar;
     }
 
@@ -1022,14 +985,7 @@ public class TowerDefense extends Application {
             restartGame();
         });
 
-        Button exportBtn = new Button("Esporta Report 📊");
-        exportBtn.setStyle("-fx-font-size: 13px; -fx-padding: 8 16; -fx-background-color: #2980b9; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand;");
-        exportBtn.setOnAction(e -> {
-            telemetry.exportReports(entities.getTowerHealth(), entities.getMaxTowerHealth(), "VITTORIA_CAMPIONE");
-            updateLabels();
-        });
-
-        btnBox.getChildren().addAll(restartButton, exportBtn);
+        btnBox.getChildren().addAll(restartButton);
 
         victoryBox.getChildren().addAll(crownLabel, victorySub, victoryStatsLabel, btnBox);
         victoryMenu.getChildren().addAll(victoryBackdrop, victoryBox);
@@ -1047,17 +1003,15 @@ public class TowerDefense extends Application {
         int maxHp = entities.getMaxTowerHealth();
         int turretsCount = entities.getTurrets().size();
         int money = store.getMoney();
-        int cleanWaves = gameBot != null ? gameBot.getCleanWavesCount() : 0;
 
         StringBuilder sb = new StringBuilder();
         sb.append("❤️ Salute Palestra Finale: ").append(hp).append(" / ").append(maxHp).append("\n");
         sb.append("💰 Fondi Accumulati: $").append(money).append("\n");
         sb.append("🌿 Difensori Schierati: ").append(turretsCount).append("\n");
-        sb.append("⭐ Ondate Senza Danni: ").append(cleanWaves).append(" / 64\n");
         if (hp >= 5) {
-            sb.append("✅ Obiettivo Superato: Sopravvivenza con ≥ 5 HP (Residui: ").append(hp).append(" HP)!");
+            sb.append("✅ Congratulazioni! Sei il nuovo Campione di Kanto!");
         } else {
-            sb.append("⚠️ Vittoria al limite della resistenza!");
+            sb.append("⚠️ Vittoria al cardiopalma al limite della resistenza!");
         }
         victoryStatsLabel.setText(sb.toString());
         victoryMenu.setVisible(true);
@@ -1084,13 +1038,15 @@ public class TowerDefense extends Application {
             Trainer b = entities.createBossTrainer(level);
             bossName = b.getTrainerName();
         }
-        telemetry.onWaveStarted(level,
-                                store.getMoney(),
-                                entities.getTurrets().size(),
-                                gameBot != null ? gameBot.getRosterSummary() : "N/D",
-                                gameBot != null ? gameBot.calculateTotalDps() : 0.0,
-                                isBoss,
-                                bossName);
+        if (telemetry != null) {
+            telemetry.onWaveStarted(level,
+                                    store.getMoney(),
+                                    entities.getTurrets().size(),
+                                    gameBot != null ? gameBot.getRosterSummary() : "N/D",
+                                    gameBot != null ? gameBot.calculateTotalDps() : 0.0,
+                                    isBoss,
+                                    bossName);
+        }
 
         updateLabels();
     }
@@ -1115,12 +1071,16 @@ public class TowerDefense extends Application {
                                 if (gameBot != null) {
                                     gameBot.onWaveCompleted(level);
                                 }
-                                telemetry.onWaveCompleted(level, store.getMoney(), entities.getTowerHealth(), entities.getMaxTowerHealth());
+                                if (telemetry != null) {
+                                    telemetry.onWaveCompleted(level, store.getMoney(), entities.getTowerHealth(), entities.getMaxTowerHealth());
+                                }
 
                                 if (level >= 64) {
                                     level = 65; // Livello massimo 65 raggiunto: VITTORIA!
                                     SoundManager.playVictoryFanfare();
-                                    telemetry.exportReports(entities.getTowerHealth(), entities.getMaxTowerHealth(), "VITTORIA_CAMPIONE");
+                                    if (telemetry != null) {
+                                        telemetry.exportReports(entities.getTowerHealth(), entities.getMaxTowerHealth(), "VITTORIA_CAMPIONE");
+                                    }
                                     showVictoryMenu();
                                     updateLabels();
                                     return;
@@ -1143,7 +1103,9 @@ public class TowerDefense extends Application {
                                 towerLife.setText("Palestra Caduta! (0/" + entities.getMaxTowerHealth() + ")");
                                 towerLife.setTextFill(Color.RED);
                                 backdrop.setEffect(new BoxBlur());
-                                telemetry.onGameOver(level, store.getMoney(), entities.getMaxTowerHealth());
+                                if (telemetry != null) {
+                                    telemetry.onGameOver(level, store.getMoney(), entities.getMaxTowerHealth());
+                                }
                                 VBox box = (VBox) gameOverMenu.getChildren().get(1);
                                 Label waveLbl = (Label) box.getChildren().get(1);
                                 waveLbl.setText("Ondata raggiunta: " + level);
@@ -1245,7 +1207,9 @@ public class TowerDefense extends Application {
         waveTime = 0;
         entities.reset();
         store.reset();
-        telemetry.reset();
+        if (telemetry != null) {
+            telemetry.reset();
+        }
         if (gameBot != null) {
             gameBot.reset();
         }
@@ -1264,7 +1228,9 @@ public class TowerDefense extends Application {
     }
 
     public void wave() {
-        telemetry.tick();
+        if (telemetry != null) {
+            telemetry.tick();
+        }
 
         if (!gameOn) {
             if (gameBot != null) {
