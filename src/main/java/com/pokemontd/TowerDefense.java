@@ -67,6 +67,7 @@ public class TowerDefense extends Application {
     private final Scale gameScale = new Scale(1.0, 1.0, 0, 0);
     private Pane centerGamePane;
     private double currentScale = 1.0;
+    private boolean pausedBySettings = false;
 
     // Range Indicator
     private Circle rangeIndicator;
@@ -238,23 +239,25 @@ public class TowerDefense extends Application {
         pauseOverlay = new Rectangle(WIDTH, HEIGHT);
         pauseOverlay.setFill(Color.rgb(0, 0, 0, 0.55));
         pauseOverlay.setVisible(false);
+        pauseOverlay.setOnMouseClicked(e -> togglePause());
 
-        pauseText = new Label("IN PAUSA");
+        pauseText = new Label("IN PAUSA\n(Clicca per riprendere)");
         pauseText.setTextFill(Color.WHITE);
-        pauseText.setStyle("-fx-font-size: 28px; -fx-font-weight: bold;");
-        pauseText.setTranslateX(WIDTH / 2.0 - 65);
-        pauseText.setTranslateY(HEIGHT / 2.0 - 20);
+        pauseText.setStyle("-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-alignment: center;");
+        pauseText.setTranslateX(WIDTH / 2.0 - 110);
+        pauseText.setTranslateY(HEIGHT / 2.0 - 25);
         pauseText.setVisible(false);
+        pauseText.setOnMouseClicked(e -> togglePause());
 
         gameWindow.getChildren().addAll(
             backdrop,
             rangeIndicator,
             turretMark.getImageView(),
             entities.getAll(),
-            topHudBox,
-            turretControlBar,
             pauseOverlay,
-            pauseText
+            pauseText,
+            topHudBox,
+            turretControlBar
         );
 
         // Main Menu
@@ -343,10 +346,12 @@ public class TowerDefense extends Application {
         Scene scene = new Scene(rootPane, 1280, 760);
         primaryStage.setTitle("Pokemon Tower Defense");
 
-        // F11 Fullscreen shortcut
+        // Keyboard shortcuts: F11 Fullscreen, Space or P to Pause/Resume
         scene.setOnKeyPressed(event -> {
             if (event.getCode() == KeyCode.F11) {
                 primaryStage.setFullScreen(!primaryStage.isFullScreen());
+            } else if (event.getCode() == KeyCode.SPACE || event.getCode() == KeyCode.P) {
+                togglePause();
             }
         });
 
@@ -652,12 +657,17 @@ public class TowerDefense extends Application {
     private void openSettings() {
         settingsMenu.setVisible(true);
         if (gameOn && !isPaused) {
+            pausedBySettings = true;
             togglePause();
         }
     }
 
     private void closeSettings() {
         settingsMenu.setVisible(false);
+        if (gameOn && isPaused && pausedBySettings) {
+            pausedBySettings = false;
+            togglePause();
+        }
     }
 
     private void buildPokedexMenu() {
@@ -939,6 +949,7 @@ public class TowerDefense extends Application {
         }
         gameOn = false;
         isPaused = false;
+        pausedBySettings = false;
         pauseBtn.setText("⏸");
         pauseOverlay.setVisible(false);
         pauseText.setVisible(false);
