@@ -1,12 +1,12 @@
 {
-  "sessionTimestamp": "2026-10-04 21:23:27",
+  "sessionTimestamp": "2026-10-04 22:05:52",
   "mode": "BOT_AI",
   "status": "VITTORIA_CAMPIONE",
   "highestWave": 64,
-  "gymHealth": 6,
+  "gymHealth": 7,
   "maxGymHealth": 25,
-  "totalDamageGym": 19,
-  "cleanWaves": 57,
+  "totalDamageGym": 18,
+  "cleanWaves": 58,
   "waves": [
     {
       "wave": 1,
@@ -38,14 +38,14 @@
       "wave": 3,
       "isBoss": false,
       "spawned": 8,
-      "killed": 7,
-      "leaked": 1,
-      "damageGym": 1,
-      "durationTicks": 2630,
-      "endGold": 312,
+      "killed": 8,
+      "leaked": 0,
+      "damageGym": 0,
+      "durationTicks": 1733,
+      "endGold": 329,
       "turrets": 2,
       "dps": 16.7,
-      "outcome": "⚠️ 1 LEAK"
+      "outcome": "⭐ PERFETTA"
     },
     {
       "wave": 4,
@@ -54,8 +54,8 @@
       "killed": 10,
       "leaked": 0,
       "damageGym": 0,
-      "durationTicks": 2357,
-      "endGold": 337,
+      "durationTicks": 2352,
+      "endGold": 354,
       "turrets": 2,
       "dps": 43.1,
       "outcome": "⭐ PERFETTA"
@@ -67,8 +67,8 @@
       "killed": 4,
       "leaked": 0,
       "damageGym": 0,
-      "durationTicks": 2166,
-      "endGold": 449,
+      "durationTicks": 2095,
+      "endGold": 466,
       "turrets": 3,
       "dps": 64.6,
       "outcome": "⭐ PERFETTA"
@@ -80,8 +80,8 @@
       "killed": 14,
       "leaked": 0,
       "damageGym": 0,
-      "durationTicks": 2794,
-      "endGold": 454,
+      "durationTicks": 2773,
+      "endGold": 471,
       "turrets": 3,
       "dps": 64.6,
       "outcome": "⭐ PERFETTA"
@@ -93,8 +93,8 @@
       "killed": 16,
       "leaked": 0,
       "damageGym": 0,
-      "durationTicks": 3018,
-      "endGold": 390,
+      "durationTicks": 3064,
+      "endGold": 407,
       "turrets": 4,
       "dps": 86.2,
       "outcome": "⭐ PERFETTA"
@@ -106,8 +106,8 @@
       "killed": 18,
       "leaked": 0,
       "damageGym": 0,
-      "durationTicks": 3149,
-      "endGold": 241,
+      "durationTicks": 3288,
+      "endGold": 258,
       "turrets": 5,
       "dps": 107.7,
       "outcome": "⭐ PERFETTA"
@@ -119,8 +119,8 @@
       "killed": 20,
       "leaked": 0,
       "damageGym": 0,
-      "durationTicks": 3508,
-      "endGold": 871,
+      "durationTicks": 4239,
+      "endGold": 888,
       "turrets": 6,
       "dps": 129.2,
       "outcome": "⭐ PERFETTA"
@@ -132,8 +132,8 @@
       "killed": 6,
       "leaked": 0,
       "damageGym": 0,
-      "durationTicks": 2032,
-      "endGold": 976,
+      "durationTicks": 2043,
+      "endGold": 993,
       "turrets": 6,
       "dps": 213.3,
       "outcome": "⭐ PERFETTA"
@@ -145,8 +145,8 @@
       "killed": 24,
       "leaked": 0,
       "damageGym": 0,
-      "durationTicks": 3646,
-      "endGold": 896,
+      "durationTicks": 3744,
+      "endGold": 913,
       "turrets": 6,
       "dps": 213.3,
       "outcome": "⭐ PERFETTA"
@@ -158,8 +158,8 @@
       "killed": 26,
       "leaked": 0,
       "damageGym": 0,
-      "durationTicks": 3769,
-      "endGold": 707,
+      "durationTicks": 3750,
+      "endGold": 724,
       "turrets": 7,
       "dps": 248.9,
       "outcome": "⭐ PERFETTA"
@@ -171,8 +171,8 @@
       "killed": 26,
       "leaked": 0,
       "damageGym": 0,
-      "durationTicks": 3602,
-      "endGold": 339,
+      "durationTicks": 3584,
+      "endGold": 356,
       "turrets": 8,
       "dps": 284.4,
       "outcome": "⭐ PERFETTA"
@@ -184,8 +184,8 @@
       "killed": 26,
       "leaked": 0,
       "damageGym": 0,
-      "durationTicks": 3499,
-      "endGold": 1312,
+      "durationTicks": 3476,
+      "endGold": 1329,
       "turrets": 9,
       "dps": 320.0,
       "outcome": "⭐ PERFETTA"
@@ -197,8 +197,8 @@
       "killed": 8,
       "leaked": 0,
       "damageGym": 0,
-      "durationTicks": 1809,
-      "endGold": 1150,
+      "durationTicks": 1830,
+      "endGold": 1167,
       "turrets": 9,
       "dps": 562.5,
       "outcome": "⭐ PERFETTA"
@@ -210,8 +210,8 @@
       "killed": 26,
       "leaked": 0,
       "damageGym": 0,
-      "durationTicks": 3095,
-      "endGold": 665,
+      "durationTicks": 3166,
+      "endGold": 682,
       "turrets": 9,
       "dps": 562.5,
       "outcome": "⭐ PERFETTA"
@@ -223,8 +223,8 @@
       "killed": 26,
       "leaked": 0,
       "damageGym": 0,
-      "durationTicks": 2910,
-      "endGold": 1761,
+      "durationTicks": 3036,
+      "endGold": 1778,
       "turrets": 10,
       "dps": 625.0,
       "outcome": "⭐ PERFETTA"
@@ -236,8 +236,8 @@
       "killed": 26,
       "leaked": 0,
       "damageGym": 0,
-      "durationTicks": 2876,
-      "endGold": 1098,
+      "durationTicks": 2646,
+      "endGold": 1115,
       "turrets": 10,
       "dps": 625.0,
       "outcome": "⭐ PERFETTA"
@@ -249,8 +249,8 @@
       "killed": 26,
       "leaked": 0,
       "damageGym": 0,
-      "durationTicks": 2794,
-      "endGold": 2276,
+      "durationTicks": 2698,
+      "endGold": 2293,
       "turrets": 11,
       "dps": 687.5,
       "outcome": "⭐ PERFETTA"
@@ -262,8 +262,8 @@
       "killed": 9,
       "leaked": 0,
       "damageGym": 0,
-      "durationTicks": 1582,
-      "endGold": 1253,
+      "durationTicks": 1590,
+      "endGold": 1270,
       "turrets": 12,
       "dps": 750.0,
       "outcome": "⭐ PERFETTA"
@@ -275,8 +275,8 @@
       "killed": 26,
       "leaked": 0,
       "damageGym": 0,
-      "durationTicks": 2433,
-      "endGold": 2513,
+      "durationTicks": 2405,
+      "endGold": 2530,
       "turrets": 12,
       "dps": 750.0,
       "outcome": "⭐ PERFETTA"
@@ -288,8 +288,8 @@
       "killed": 26,
       "leaked": 0,
       "damageGym": 0,
-      "durationTicks": 2350,
-      "endGold": 1434,
+      "durationTicks": 2233,
+      "endGold": 1451,
       "turrets": 13,
       "dps": 812.5,
       "outcome": "⭐ PERFETTA"
@@ -301,8 +301,8 @@
       "killed": 26,
       "leaked": 0,
       "damageGym": 0,
-      "durationTicks": 2408,
-      "endGold": 2776,
+      "durationTicks": 2252,
+      "endGold": 2793,
       "turrets": 13,
       "dps": 812.5,
       "outcome": "⭐ PERFETTA"
@@ -314,8 +314,8 @@
       "killed": 26,
       "leaked": 0,
       "damageGym": 0,
-      "durationTicks": 2319,
-      "endGold": 1459,
+      "durationTicks": 2256,
+      "endGold": 1476,
       "turrets": 14,
       "dps": 875.0,
       "outcome": "⭐ PERFETTA"
@@ -327,8 +327,8 @@
       "killed": 11,
       "leaked": 0,
       "damageGym": 0,
-      "durationTicks": 1510,
-      "endGold": 2784,
+      "durationTicks": 1625,
+      "endGold": 2801,
       "turrets": 14,
       "dps": 875.0,
       "outcome": "⭐ PERFETTA"
@@ -340,8 +340,8 @@
       "killed": 26,
       "leaked": 0,
       "damageGym": 0,
-      "durationTicks": 2306,
-      "endGold": 1209,
+      "durationTicks": 2304,
+      "endGold": 1226,
       "turrets": 14,
       "dps": 875.0,
       "outcome": "⭐ PERFETTA"
@@ -353,8 +353,8 @@
       "killed": 26,
       "leaked": 0,
       "damageGym": 0,
-      "durationTicks": 2271,
-      "endGold": 2715,
+      "durationTicks": 2232,
+      "endGold": 2732,
       "turrets": 15,
       "dps": 937.5,
       "outcome": "⭐ PERFETTA"
@@ -366,8 +366,8 @@
       "killed": 26,
       "leaked": 0,
       "damageGym": 0,
-      "durationTicks": 2344,
-      "endGold": 862,
+      "durationTicks": 2217,
+      "endGold": 879,
       "turrets": 15,
       "dps": 937.5,
       "outcome": "⭐ PERFETTA"
@@ -379,8 +379,8 @@
       "killed": 26,
       "leaked": 0,
       "damageGym": 0,
-      "durationTicks": 2137,
-      "endGold": 2450,
+      "durationTicks": 2260,
+      "endGold": 2467,
       "turrets": 16,
       "dps": 1000.0,
       "outcome": "⭐ PERFETTA"
@@ -392,8 +392,8 @@
       "killed": 13,
       "leaked": 0,
       "damageGym": 0,
-      "durationTicks": 2754,
-      "endGold": 4063,
+      "durationTicks": 2418,
+      "endGold": 4080,
       "turrets": 16,
       "dps": 1000.0,
       "outcome": "⭐ PERFETTA"
@@ -405,8 +405,8 @@
       "killed": 26,
       "leaked": 0,
       "damageGym": 0,
-      "durationTicks": 2393,
-      "endGold": 1953,
+      "durationTicks": 2345,
+      "endGold": 1970,
       "turrets": 17,
       "dps": 1062.5,
       "outcome": "⭐ PERFETTA"
@@ -418,8 +418,8 @@
       "killed": 26,
       "leaked": 0,
       "damageGym": 0,
-      "durationTicks": 2331,
-      "endGold": 3664,
+      "durationTicks": 2365,
+      "endGold": 3681,
       "turrets": 17,
       "dps": 1062.5,
       "outcome": "⭐ PERFETTA"
@@ -431,8 +431,8 @@
       "killed": 26,
       "leaked": 0,
       "damageGym": 0,
-      "durationTicks": 2429,
-      "endGold": 1236,
+      "durationTicks": 2380,
+      "endGold": 1253,
       "turrets": 17,
       "dps": 1062.5,
       "outcome": "⭐ PERFETTA"
@@ -444,8 +444,8 @@
       "killed": 26,
       "leaked": 0,
       "damageGym": 0,
-      "durationTicks": 2265,
-      "endGold": 3029,
+      "durationTicks": 2185,
+      "endGold": 3046,
       "turrets": 18,
       "dps": 1125.0,
       "outcome": "⭐ PERFETTA"
@@ -458,7 +458,7 @@
       "leaked": 1,
       "damageGym": 3,
       "durationTicks": 3329,
-      "endGold": 4226,
+      "endGold": 4243,
       "turrets": 18,
       "dps": 1125.0,
       "outcome": "⚠️ 3 LEAK"
@@ -470,8 +470,8 @@
       "killed": 26,
       "leaked": 0,
       "damageGym": 0,
-      "durationTicks": 2331,
-      "endGold": 1501,
+      "durationTicks": 2366,
+      "endGold": 1518,
       "turrets": 18,
       "dps": 1125.0,
       "outcome": "⭐ PERFETTA"
@@ -483,8 +483,8 @@
       "killed": 26,
       "leaked": 0,
       "damageGym": 0,
-      "durationTicks": 2318,
-      "endGold": 3417,
+      "durationTicks": 2306,
+      "endGold": 3434,
       "turrets": 19,
       "dps": 1187.5,
       "outcome": "⭐ PERFETTA"
@@ -496,8 +496,8 @@
       "killed": 26,
       "leaked": 0,
       "damageGym": 0,
-      "durationTicks": 2391,
-      "endGold": 5374,
+      "durationTicks": 2182,
+      "endGold": 5391,
       "turrets": 19,
       "dps": 1187.5,
       "outcome": "⭐ PERFETTA"
@@ -509,8 +509,8 @@
       "killed": 26,
       "leaked": 0,
       "damageGym": 0,
-      "durationTicks": 2438,
-      "endGold": 2332,
+      "durationTicks": 2359,
+      "endGold": 2349,
       "turrets": 20,
       "dps": 1250.0,
       "outcome": "⭐ PERFETTA"
@@ -523,7 +523,7 @@
       "leaked": 1,
       "damageGym": 3,
       "durationTicks": 3469,
-      "endGold": 3777,
+      "endGold": 3794,
       "turrets": 20,
       "dps": 1250.0,
       "outcome": "⚠️ 3 LEAK"
@@ -535,8 +535,8 @@
       "killed": 26,
       "leaked": 0,
       "damageGym": 0,
-      "durationTicks": 2432,
-      "endGold": 5857,
+      "durationTicks": 2371,
+      "endGold": 5874,
       "turrets": 20,
       "dps": 1250.0,
       "outcome": "⭐ PERFETTA"
@@ -548,8 +548,8 @@
       "killed": 26,
       "leaked": 0,
       "damageGym": 0,
-      "durationTicks": 2480,
-      "endGold": 2478,
+      "durationTicks": 2271,
+      "endGold": 2495,
       "turrets": 21,
       "dps": 1312.5,
       "outcome": "⭐ PERFETTA"
@@ -561,8 +561,8 @@
       "killed": 26,
       "leaked": 0,
       "damageGym": 0,
-      "durationTicks": 2362,
-      "endGold": 4640,
+      "durationTicks": 2343,
+      "endGold": 4657,
       "turrets": 21,
       "dps": 1312.5,
       "outcome": "⭐ PERFETTA"
@@ -574,8 +574,8 @@
       "killed": 26,
       "leaked": 0,
       "damageGym": 0,
-      "durationTicks": 2262,
-      "endGold": 863,
+      "durationTicks": 2306,
+      "endGold": 880,
       "turrets": 21,
       "dps": 1312.5,
       "outcome": "⭐ PERFETTA"
@@ -587,8 +587,8 @@
       "killed": 17,
       "leaked": 1,
       "damageGym": 3,
-      "durationTicks": 4760,
-      "endGold": 2576,
+      "durationTicks": 4792,
+      "endGold": 2593,
       "turrets": 22,
       "dps": 1375.0,
       "outcome": "⚠️ 3 LEAK"
@@ -600,8 +600,8 @@
       "killed": 26,
       "leaked": 0,
       "damageGym": 0,
-      "durationTicks": 2327,
-      "endGold": 4861,
+      "durationTicks": 2368,
+      "endGold": 4878,
       "turrets": 22,
       "dps": 1375.0,
       "outcome": "⭐ PERFETTA"
@@ -613,8 +613,8 @@
       "killed": 26,
       "leaked": 0,
       "damageGym": 0,
-      "durationTicks": 2372,
-      "endGold": 7187,
+      "durationTicks": 2507,
+      "endGold": 7204,
       "turrets": 22,
       "dps": 1375.0,
       "outcome": "⭐ PERFETTA"
@@ -626,8 +626,8 @@
       "killed": 26,
       "leaked": 0,
       "damageGym": 0,
-      "durationTicks": 2415,
-      "endGold": 3074,
+      "durationTicks": 2285,
+      "endGold": 3091,
       "turrets": 23,
       "dps": 1437.5,
       "outcome": "⭐ PERFETTA"
@@ -639,8 +639,8 @@
       "killed": 26,
       "leaked": 0,
       "damageGym": 0,
-      "durationTicks": 2366,
-      "endGold": 5482,
+      "durationTicks": 2357,
+      "endGold": 5499,
       "turrets": 23,
       "dps": 1437.5,
       "outcome": "⭐ PERFETTA"
@@ -653,7 +653,7 @@
       "leaked": 1,
       "damageGym": 3,
       "durationTicks": 3679,
-      "endGold": 7419,
+      "endGold": 7436,
       "turrets": 23,
       "dps": 1437.5,
       "outcome": "⚠️ 3 LEAK"
@@ -665,8 +665,8 @@
       "killed": 26,
       "leaked": 0,
       "damageGym": 0,
-      "durationTicks": 2425,
-      "endGold": 2909,
+      "durationTicks": 2350,
+      "endGold": 2926,
       "turrets": 24,
       "dps": 1500.0,
       "outcome": "⭐ PERFETTA"
@@ -678,8 +678,8 @@
       "killed": 26,
       "leaked": 0,
       "damageGym": 0,
-      "durationTicks": 2447,
-      "endGold": 5440,
+      "durationTicks": 2393,
+      "endGold": 5457,
       "turrets": 24,
       "dps": 1500.0,
       "outcome": "⭐ PERFETTA"
@@ -691,8 +691,8 @@
       "killed": 26,
       "leaked": 0,
       "damageGym": 0,
-      "durationTicks": 2481,
-      "endGold": 8012,
+      "durationTicks": 2426,
+      "endGold": 8029,
       "turrets": 24,
       "dps": 1500.0,
       "outcome": "⭐ PERFETTA"
@@ -704,8 +704,8 @@
       "killed": 26,
       "leaked": 0,
       "damageGym": 0,
-      "durationTicks": 2447,
-      "endGold": 3085,
+      "durationTicks": 2223,
+      "endGold": 3102,
       "turrets": 25,
       "dps": 1562.5,
       "outcome": "⭐ PERFETTA"
@@ -717,8 +717,8 @@
       "killed": 21,
       "leaked": 0,
       "damageGym": 0,
-      "durationTicks": 3245,
-      "endGold": 6300,
+      "durationTicks": 3282,
+      "endGold": 6317,
       "turrets": 25,
       "dps": 1562.5,
       "outcome": "⭐ PERFETTA"
@@ -730,8 +730,8 @@
       "killed": 26,
       "leaked": 0,
       "damageGym": 0,
-      "durationTicks": 2428,
-      "endGold": 8995,
+      "durationTicks": 2370,
+      "endGold": 9012,
       "turrets": 25,
       "dps": 1562.5,
       "outcome": "⭐ PERFETTA"
@@ -743,8 +743,8 @@
       "killed": 26,
       "leaked": 0,
       "damageGym": 0,
-      "durationTicks": 2309,
-      "endGold": 3631,
+      "durationTicks": 2384,
+      "endGold": 3648,
       "turrets": 26,
       "dps": 1625.0,
       "outcome": "⭐ PERFETTA"
@@ -756,8 +756,8 @@
       "killed": 26,
       "leaked": 0,
       "damageGym": 0,
-      "durationTicks": 2403,
-      "endGold": 6408,
+      "durationTicks": 2231,
+      "endGold": 6425,
       "turrets": 26,
       "dps": 1625.0,
       "outcome": "⭐ PERFETTA"
@@ -769,8 +769,8 @@
       "killed": 26,
       "leaked": 0,
       "damageGym": 0,
-      "durationTicks": 2275,
-      "endGold": 9226,
+      "durationTicks": 2397,
+      "endGold": 9243,
       "turrets": 26,
       "dps": 1625.0,
       "outcome": "⭐ PERFETTA"
@@ -783,7 +783,7 @@
       "leaked": 1,
       "damageGym": 3,
       "durationTicks": 3819,
-      "endGold": 2961,
+      "endGold": 2978,
       "turrets": 27,
       "dps": 1687.5,
       "outcome": "⚠️ 3 LEAK"
@@ -795,8 +795,8 @@
       "killed": 26,
       "leaked": 0,
       "damageGym": 0,
-      "durationTicks": 2361,
-      "endGold": 5861,
+      "durationTicks": 2485,
+      "endGold": 5878,
       "turrets": 27,
       "dps": 1687.5,
       "outcome": "⭐ PERFETTA"
@@ -808,8 +808,8 @@
       "killed": 26,
       "leaked": 0,
       "damageGym": 0,
-      "durationTicks": 2459,
-      "endGold": 8802,
+      "durationTicks": 2121,
+      "endGold": 8819,
       "turrets": 27,
       "dps": 1687.5,
       "outcome": "⭐ PERFETTA"
@@ -821,8 +821,8 @@
       "killed": 26,
       "leaked": 0,
       "damageGym": 0,
-      "durationTicks": 2389,
-      "endGold": 2504,
+      "durationTicks": 2350,
+      "endGold": 2521,
       "turrets": 27,
       "dps": 1687.5,
       "outcome": "⭐ PERFETTA"
@@ -835,7 +835,7 @@
       "leaked": 1,
       "damageGym": 3,
       "durationTicks": 3819,
-      "endGold": 5059,
+      "endGold": 5076,
       "turrets": 28,
       "dps": 1750.0,
       "outcome": "⚠️ 3 LEAK"
@@ -843,63 +843,63 @@
   ],
   "pokemonStats": {
     "Rattata": {
-      "damage": 490,
-      "shots": 98,
+      "damage": 450,
+      "shots": 90,
       "superEffective": 0,
       "paralysis": 0,
       "burn": 0
     },
     "Pikachu": {
-      "damage": 371931,
-      "shots": 15840,
-      "superEffective": 11670,
-      "paralysis": 5649,
+      "damage": 405699,
+      "shots": 17398,
+      "superEffective": 12628,
+      "paralysis": 6057,
       "burn": 0
     },
     "Squirtle": {
-      "damage": 1082464,
-      "shots": 18937,
-      "superEffective": 15990,
+      "damage": 1019072,
+      "shots": 17658,
+      "superEffective": 15113,
       "paralysis": 0,
       "burn": 0
     },
     "Charizard": {
-      "damage": 1223331,
-      "shots": 19344,
-      "superEffective": 2560,
+      "damage": 1251836,
+      "shots": 20202,
+      "superEffective": 2272,
       "paralysis": 0,
-      "burn": 7659
+      "burn": 8170
     }
   },
   "enemyStats": {
-    "Fantallenatore": {
-      "spawned": 204,
-      "killed": 204,
+    "Pescatore": {
+      "spawned": 226,
+      "killed": 226,
       "leaked": 0
     },
-    "Pescatore": {
-      "spawned": 216,
-      "killed": 216,
+    "Fantallenatore": {
+      "spawned": 234,
+      "killed": 234,
       "leaked": 0
     },
     "Centauro": {
-      "spawned": 244,
-      "killed": 244,
+      "spawned": 245,
+      "killed": 245,
       "leaked": 0
     },
     "Pigliamosche": {
-      "spawned": 247,
-      "killed": 246,
-      "leaked": 1
-    },
-    "Marinaio": {
       "spawned": 219,
       "killed": 219,
       "leaked": 0
     },
+    "Marinaio": {
+      "spawned": 234,
+      "killed": 234,
+      "leaked": 0
+    },
     "Montanaro": {
-      "spawned": 245,
-      "killed": 245,
+      "spawned": 217,
+      "killed": 217,
       "leaked": 0
     },
     "Brock (Capopalestra)": {
