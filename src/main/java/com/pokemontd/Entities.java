@@ -1,7 +1,13 @@
 package com.pokemontd;
 
 import java.util.ArrayList;
+import javafx.animation.FadeTransition;
+import javafx.animation.ParallelTransition;
+import javafx.animation.TranslateTransition;
 import javafx.scene.Group;
+import javafx.scene.control.Label;
+import javafx.scene.paint.Color;
+import javafx.util.Duration;
 
 public class Entities {
     private ArrayList<Turret> turrets = new ArrayList<Turret>();
@@ -9,7 +15,8 @@ public class Entities {
     final private Group pikas = new Group();
     final private Group turretGroup = new Group();
     final private Group allTrainers = new Group();
-    final private Group all = new Group(pikas, turretGroup, allTrainers);
+    final private Group combatTextGroup = new Group();
+    final private Group all = new Group(pikas, turretGroup, allTrainers, combatTextGroup);
     final private ArrayList<Trainer> trainers = new ArrayList<Trainer>();
     final private ArrayList<Group> trainersWballs = new ArrayList<Group>();
     private Integer towerHealth = 1000;
@@ -77,16 +84,48 @@ public class Entities {
     }
 
     public Trainer randomTrainer(int level) {
-        ArrayList<String> pics = new ArrayList<String>();
-        pics.add("/Resource/trainer1.png");
-        pics.add("/Resource/trainer2.png");
-        pics.add("/Resource/trainer3.png");
-        pics.add("/Resource/trainer4.png");
-        pics.add("/Resource/trainer5.png");
-        int rand = (int) (Math.random() * pics.size());
-        int health = Math.max(5, 12 * level - 5);
-        Trainer trainer = new Trainer(pics.get(rand), 202, 800, health);
-        return trainer;
+        // 5 defined trainer archetypes with elemental types
+        int rand = (int) (Math.random() * 5);
+        String pic;
+        String name;
+        PokemonType type;
+        int hp;
+
+        switch (rand) {
+            case 0:
+                pic = "/Resource/trainer1.png";
+                name = "Pescatore";
+                type = PokemonType.WATER;
+                hp = Math.max(8, 11 * level - 3);
+                break;
+            case 1:
+                pic = "/Resource/trainer2.png";
+                name = "Centauro";
+                type = PokemonType.FIRE;
+                hp = Math.max(10, 13 * level - 2);
+                break;
+            case 2:
+                pic = "/Resource/trainer3.png";
+                name = "Pigliamosche";
+                type = PokemonType.GRASS;
+                hp = Math.max(6, 9 * level - 2);
+                break;
+            case 3:
+                pic = "/Resource/trainer4.png";
+                name = "Marinaio";
+                type = PokemonType.WATER;
+                hp = Math.max(12, 14 * level);
+                break;
+            case 4:
+            default:
+                pic = "/Resource/trainer5.png";
+                name = "Fantallenatore";
+                type = PokemonType.NORMAL;
+                hp = Math.max(15, 16 * level + 5);
+                break;
+        }
+
+        return new Trainer(pic, 202, 800, hp, name, type);
     }
 
     public void attackTrainers() {
@@ -110,9 +149,10 @@ public class Entities {
 
                 if (turret.shotTimer() >= poke.getCooldown()) {
                     if (dist <= poke.getRange()) {
-                        Attacker pika = turret.shoot(trainer);
-                        if (pika != null) {
-                            add(pika);
+                        Attacker atker = turret.shoot(trainer);
+                        if (atker != null) {
+                            add(atker);
+                            SoundManager.playShoot();
                             break;
                         }
                     }
@@ -127,8 +167,10 @@ public class Entities {
         ArrayList<Trainer> dead = new ArrayList<Trainer>();
         for (int k = 0; k < trainers.size(); k++) {
             Trainer trainer = trainers.get(k);
+            trainer.tickStatus();
             trainer.move();
             trainer.update(trainersWballs.get(k));
+
             if (trainer.getX() < 190 && trainer.getY() < 110) {
                 towerHealth--;
             }
@@ -156,7 +198,31 @@ public class Entities {
         ArrayList<Attacker> pokedone = new ArrayList<Attacker>();
         for (Attacker a : atkers) {
             if (a.hasReached()) {
-                a.getTarget().damage(a.getAtk());
+                Pokemon poke = a.getPokemon();
+                PokemonType pType = (poke != null) ? poke.getType() : PokemonType.NORMAL;
+                Trainer target = a.getTarget();
+
+                DamageResult res = target.takeDamage(a.getAtk(), pType);
+
+                // Sound & Floating combat text
+                if (res.multiplier > 1.0) {
+                    SoundManager.playSuperEffective();
+                    spawnFloatingText(target.getX(), target.getY() - 10, "-" + res.damage + " (2x!)", Color.GOLD);
+                } else if (res.multiplier < 1.0) {
+                    SoundManager.playHit();
+                    spawnFloatingText(target.getX(), target.getY() - 10, "-" + res.damage + " (0.5x)", Color.LIGHTGRAY);
+                } else {
+                    SoundManager.playHit();
+                    spawnFloatingText(target.getX(), target.getY() - 10, "-" + res.damage, Color.WHITE);
+                }
+
+                if (res.appliedParalysis) {
+                    spawnFloatingText(target.getX() + 10, target.getY() - 25, "⚡ PARALISI!", Color.YELLOW);
+                }
+                if (res.appliedBurn) {
+                    spawnFloatingText(target.getX() + 10, target.getY() - 25, "🔥 SCOTTATO!", Color.ORANGERED);
+                }
+
                 pokedone.add(a);
             } else {
                 a.updatePath(a.getTarget());
@@ -166,6 +232,25 @@ public class Entities {
         for (Attacker a : pokedone) {
             this.remove(a);
         }
+    }
+
+    private void spawnFloatingText(double x, double y, String text, Color color) {
+        Label lbl = new Label(text);
+        lbl.setTextFill(color);
+        lbl.setStyle("-fx-font-weight: bold; -fx-font-size: 11px; -fx-effect: dropshadow(one-pass-box, black, 2, 1, 0, 0);");
+        lbl.setTranslateX(x);
+        lbl.setTranslateY(y);
+        combatTextGroup.getChildren().add(lbl);
+
+        TranslateTransition tt = new TranslateTransition(Duration.millis(700), lbl);
+        tt.setByY(-20);
+        FadeTransition ft = new FadeTransition(Duration.millis(700), lbl);
+        ft.setFromValue(1.0);
+        ft.setToValue(0.0);
+
+        ParallelTransition pt = new ParallelTransition(tt, ft);
+        pt.setOnFinished(e -> combatTextGroup.getChildren().remove(lbl));
+        pt.play();
     }
 
     public Integer getTowerHealth() {
@@ -189,6 +274,7 @@ public class Entities {
         }
         turrets.clear();
 
+        combatTextGroup.getChildren().clear();
         towerHealth = 1000;
     }
 }

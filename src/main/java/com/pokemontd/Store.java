@@ -15,12 +15,12 @@ public class Store {
 
     private void initStore() {
         inventory.clear();
-        inventory.add(new Pokemon("Pikachu", "/Resource/pikachu.png", 15, 500, 95, 80, "Attacco elettrico rapido a medio raggio."));
-        inventory.add(new Pokemon("Squirtle", "/Resource/squirtle.png", 30, 1000, 110, 110, "Getto d'acqua potente a lungo raggio."));
-        inventory.add(new Pokemon("Charizard", "/Resource/charizard.png", 60, 2000, 130, 150, "Devastante lanciafiamme ad ampissimo raggio."));
+        inventory.add(new Pokemon("Pikachu", "/Resource/pikachu.png", PokemonType.ELECTRIC, 15, 500, 95, 80, "Attacco elettrico a medio raggio. Può paralizzare!"));
+        inventory.add(new Pokemon("Squirtle", "/Resource/squirtle.png", PokemonType.WATER, 30, 1000, 110, 110, "Getto d'acqua a lungo raggio ad alto impatto."));
+        inventory.add(new Pokemon("Charizard", "/Resource/charizard.png", PokemonType.FIRE, 60, 2000, 130, 150, "Lanciafiamme devastante ad ampissimo raggio. Può scottare!"));
 
         unlockedPokemon.clear();
-        unlockedPokemon.add(new Pokemon("Rattata", "/Resource/rattata.png", 5, 0, 80, 90, "Attacco rapido iniziale a corto raggio."));
+        unlockedPokemon.add(new Pokemon("Rattata", "/Resource/rattata.png", PokemonType.NORMAL, 5, 0, 80, 90, "Attacco rapido a corto raggio. Difensore iniziale."));
     }
 
     public void reset() {

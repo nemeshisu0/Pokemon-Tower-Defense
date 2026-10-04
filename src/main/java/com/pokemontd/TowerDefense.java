@@ -17,7 +17,6 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.StackPane;
 import javafx.scene.Group;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -68,6 +67,7 @@ public class TowerDefense extends Application {
     private Button startWaveButton;
     private Button pauseBtn;
     private Button speedBtn;
+    private Button muteBtn;
     private Group backdrop;
     private Rectangle pauseOverlay;
     private Label pauseText;
@@ -91,7 +91,7 @@ public class TowerDefense extends Application {
                 Coord turretPos = turretMark.getGrassCoord();
                 Turret turret = store.buyTurret(turretPos, 1);
                 if (turret != null) {
-                    // Click handler to select and manage turret
+                    SoundManager.playBuy();
                     turret.getView().setOnMouseClicked(evt -> {
                         selectTurret(turret);
                         evt.consume();
@@ -115,7 +115,6 @@ public class TowerDefense extends Application {
                     Coord grass = turretMark.getGrassCoord();
                     rangeIndicator.setCenterX(grass.getX() + 8);
                     rangeIndicator.setCenterY(grass.getY() + 8);
-                    // Preview range of default or latest unlocked
                     Pokemon previewPoke = store.getUnlockedPokemon().get(store.getUnlockedPokemon().size() - 1);
                     rangeIndicator.setRadius(previewPoke.getRange());
                     rangeIndicator.setVisible(true);
@@ -131,42 +130,49 @@ public class TowerDefense extends Application {
         });
 
         // Top HUD Bar
-        Rectangle hudBackground = new Rectangle(WIDTH, 42);
-        hudBackground.setFill(Color.rgb(255, 255, 255, 0.92));
-        hudBackground.setEffect(new DropShadow(4, Color.rgb(0, 0, 0, 0.3)));
+        Rectangle hudBackground = new Rectangle(WIDTH, 44);
+        hudBackground.setFill(Color.rgb(255, 255, 255, 0.94));
+        hudBackground.setEffect(new DropShadow(4, Color.rgb(0, 0, 0, 0.25)));
 
         towerLife.setStyle("-fx-font-weight: bold; -fx-font-size: 11px;");
-        creditLabel.setStyle("-fx-font-size: 11px;");
-        waveStatusLabel.setStyle("-fx-font-size: 11px; -fx-text-fill: #2980b9; -fx-font-weight: bold;");
+        creditLabel.setStyle("-fx-font-size: 10px;");
+        waveStatusLabel.setStyle("-fx-font-size: 10px; -fx-text-fill: #2980b9; -fx-font-weight: bold;");
 
         pauseBtn = new Button("⏸");
-        pauseBtn.setStyle("-fx-font-size: 11px; -fx-padding: 3 8;");
+        pauseBtn.setStyle("-fx-font-size: 10px; -fx-padding: 3 6;");
         pauseBtn.setOnAction(e -> togglePause());
 
         speedBtn = new Button("1x");
-        speedBtn.setStyle("-fx-font-size: 11px; -fx-padding: 3 8;");
+        speedBtn.setStyle("-fx-font-size: 10px; -fx-padding: 3 6;");
         speedBtn.setOnAction(e -> toggleSpeed());
 
-        HBox topStatsBox = new HBox(8);
-        topStatsBox.setPadding(new Insets(4, 8, 4, 8));
+        muteBtn = new Button("🔊");
+        muteBtn.setStyle("-fx-font-size: 10px; -fx-padding: 3 6;");
+        muteBtn.setOnAction(e -> {
+            SoundManager.toggleMute();
+            muteBtn.setText(SoundManager.isMuted() ? "🔇" : "🔊");
+        });
+
+        HBox topStatsBox = new HBox(6);
+        topStatsBox.setPadding(new Insets(4, 6, 4, 6));
         topStatsBox.setAlignment(Pos.CENTER_LEFT);
-        topStatsBox.getChildren().addAll(creditLabel, towerLife, pauseBtn, speedBtn);
+        topStatsBox.getChildren().addAll(creditLabel, towerLife, pauseBtn, speedBtn, muteBtn);
 
         // Turret Management Bar (Bottom overlay when a turret is selected)
-        turretControlBar = new HBox(10);
+        turretControlBar = new HBox(8);
         turretControlBar.setAlignment(Pos.CENTER);
-        turretControlBar.setPadding(new Insets(8));
-        turretControlBar.setStyle("-fx-background-color: rgba(30, 30, 30, 0.88); -fx-background-radius: 8;");
-        turretControlBar.setTranslateX(12);
+        turretControlBar.setPadding(new Insets(6));
+        turretControlBar.setStyle("-fx-background-color: rgba(30, 30, 30, 0.90); -fx-background-radius: 8;");
+        turretControlBar.setTranslateX(10);
         turretControlBar.setTranslateY(HEIGHT - 65);
-        turretControlBar.setPrefWidth(WIDTH - 24);
+        turretControlBar.setPrefWidth(WIDTH - 20);
         turretControlBar.setVisible(false);
 
         turretInfoLabel = new Label();
-        turretInfoLabel.setStyle("-fx-text-fill: white; -fx-font-size: 11px; -fx-font-weight: bold;");
+        turretInfoLabel.setStyle("-fx-text-fill: white; -fx-font-size: 10px; -fx-font-weight: bold;");
 
         Button cyclePokemonBtn = new Button("Cambia ❯");
-        cyclePokemonBtn.setStyle("-fx-font-size: 11px; -fx-background-color: #f39c12; -fx-text-fill: white; -fx-padding: 4 8;");
+        cyclePokemonBtn.setStyle("-fx-font-size: 10px; -fx-background-color: #f39c12; -fx-text-fill: white; -fx-padding: 3 6;");
         cyclePokemonBtn.setOnAction(e -> {
             if (selectedTurret != null) {
                 selectedTurret.cyclePokemon();
@@ -175,7 +181,7 @@ public class TowerDefense extends Application {
         });
 
         Button closeTurretBarBtn = new Button("✕");
-        closeTurretBarBtn.setStyle("-fx-font-size: 11px; -fx-background-color: #7f8c8d; -fx-text-fill: white; -fx-padding: 4 8;");
+        closeTurretBarBtn.setStyle("-fx-font-size: 10px; -fx-background-color: #7f8c8d; -fx-text-fill: white; -fx-padding: 3 6;");
         closeTurretBarBtn.setOnAction(e -> deselectTurret());
 
         turretControlBar.getChildren().addAll(turretInfoLabel, cyclePokemonBtn, closeTurretBarBtn);
@@ -206,7 +212,7 @@ public class TowerDefense extends Application {
 
         // Main Menu
         startWaveButton = new Button("Start Game");
-        Button pokedexButton = new Button("Pokédex / Negozio");
+        Button pokedexButton = new Button("Pokédex & Negozio");
         startWaveButton.setStyle("-fx-font-size: 14px; -fx-font-weight: bold; -fx-padding: 8 20; -fx-background-color: #27ae60; -fx-text-fill: white;");
         pokedexButton.setStyle("-fx-font-size: 13px; -fx-padding: 6 16; -fx-background-color: #2980b9; -fx-text-fill: white;");
 
@@ -215,7 +221,7 @@ public class TowerDefense extends Application {
 
         startWaveButton.setTranslateX(120);
         startWaveButton.setTranslateY(320);
-        pokedexButton.setTranslateX(120);
+        pokedexButton.setTranslateX(115);
         pokedexButton.setTranslateY(375);
 
         pokedexButton.setOnAction(e -> openPokedex());
@@ -255,7 +261,7 @@ public class TowerDefense extends Application {
             Pokemon p = selectedTurret.getAssignedPokemon();
             if (p != null) {
                 rangeIndicator.setRadius(p.getRange());
-                turretInfoLabel.setText(p.getName() + " [Atk: " + p.getAttack() + " | Rng: " + p.getRange() + "]");
+                turretInfoLabel.setText(p.getName() + " [" + p.getType().getDisplayName() + "] Atk:" + p.getAttack() + " Rng:" + p.getRange());
             }
         }
     }
@@ -321,17 +327,17 @@ public class TowerDefense extends Application {
         border.setTop(topPane);
 
         // Center: List + Details
-        HBox centerBox = new HBox(12);
+        HBox centerBox = new HBox(10);
         centerBox.setPadding(new Insets(10, 0, 10, 0));
 
         ListView<Pokemon> listDex = new ListView<Pokemon>();
-        listDex.setPrefWidth(140);
+        listDex.setPrefWidth(135);
 
         // Details Card
-        VBox detailsCard = new VBox(10);
-        detailsCard.setPrefWidth(WIDTH - 170);
-        detailsCard.setPadding(new Insets(12));
-        detailsCard.setStyle("-fx-background-color: white; -fx-background-radius: 8; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.15), 5, 0, 0, 1);");
+        VBox detailsCard = new VBox(8);
+        detailsCard.setPrefWidth(WIDTH - 165);
+        detailsCard.setPadding(new Insets(10));
+        detailsCard.setStyle("-fx-background-color: white; -fx-background-radius: 8; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.12), 5, 0, 0, 1);");
         detailsCard.setAlignment(Pos.TOP_CENTER);
 
         ImageView pokeImage = new ImageView();
@@ -340,33 +346,55 @@ public class TowerDefense extends Application {
         pokeImage.setPreserveRatio(true);
 
         Label pokeName = new Label();
-        pokeName.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
+        pokeName.setStyle("-fx-font-size: 15px; -fx-font-weight: bold;");
+
+        Label typePill = new Label();
+        typePill.setStyle("-fx-font-size: 10px; -fx-text-fill: white; -fx-padding: 2 8; -fx-background-radius: 4; -fx-font-weight: bold;");
 
         Label pokeDesc = new Label();
         pokeDesc.setWrapText(true);
-        pokeDesc.setStyle("-fx-font-size: 11px; -fx-text-fill: #7f8c8d;");
+        pokeDesc.setStyle("-fx-font-size: 10px; -fx-text-fill: #7f8c8d;");
 
         Label atkLabel = new Label();
         Label rngLabel = new Label();
         Label spdLabel = new Label();
-        atkLabel.setStyle("-fx-font-size: 11px; -fx-font-weight: bold;");
-        rngLabel.setStyle("-fx-font-size: 11px; -fx-font-weight: bold;");
-        spdLabel.setStyle("-fx-font-size: 11px; -fx-font-weight: bold;");
+        Label advantageLabel = new Label();
+        atkLabel.setStyle("-fx-font-size: 10px; -fx-font-weight: bold;");
+        rngLabel.setStyle("-fx-font-size: 10px; -fx-font-weight: bold;");
+        spdLabel.setStyle("-fx-font-size: 10px; -fx-font-weight: bold;");
+        advantageLabel.setStyle("-fx-font-size: 9px; -fx-text-fill: #27ae60; -fx-font-weight: bold;");
 
         Button buyButton = new Button("Acquista");
-        buyButton.setStyle("-fx-background-color: #27ae60; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 6 16;");
+        buyButton.setStyle("-fx-background-color: #27ae60; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 5 14;");
 
-        detailsCard.getChildren().addAll(pokeImage, pokeName, pokeDesc, atkLabel, rngLabel, spdLabel, buyButton);
+        detailsCard.getChildren().addAll(pokeImage, pokeName, typePill, pokeDesc, atkLabel, rngLabel, spdLabel, advantageLabel, buyButton);
 
         // Selection Listener
         listDex.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, selected) -> {
             if (selected != null) {
                 pokeImage.setImage(new Image(TowerDefense.class.getResourceAsStream(selected.getLoc())));
                 pokeName.setText(selected.getName());
+                typePill.setText(selected.getType().getDisplayName());
+                typePill.setStyle("-fx-background-color: " + selected.getType().getColorHex() + "; -fx-text-fill: white; -fx-padding: 2 8; -fx-background-radius: 4; -fx-font-weight: bold;");
                 pokeDesc.setText(selected.getDescription());
                 atkLabel.setText("⚔️ Attacco: " + selected.getAttack());
                 rngLabel.setText("🎯 Gittata: " + selected.getRange() + " px");
                 spdLabel.setText("⚡ Frequenza: " + (selected.getCooldown() * 10) + " ms");
+
+                switch (selected.getType()) {
+                    case ELECTRIC:
+                        advantageLabel.setText("⚡ Vantaggio: 2x vs Acqua | Paralisi!");
+                        break;
+                    case WATER:
+                        advantageLabel.setText("💧 Vantaggio: 2x vs Fuoco");
+                        break;
+                    case FIRE:
+                        advantageLabel.setText("🔥 Vantaggio: 2x vs Erba | Bruciatura!");
+                        break;
+                    default:
+                        advantageLabel.setText("⚪ Tipo Normale: Danno bilanciato");
+                        break;
+                }
 
                 boolean isUnlocked = store.getUnlockedPokemon().stream().anyMatch(p -> p.getName().equals(selected.getName()));
                 if (isUnlocked) {
@@ -384,7 +412,7 @@ public class TowerDefense extends Application {
         buyButton.setOnAction(e -> {
             int sel = listDex.getSelectionModel().getSelectedIndex();
             if (store.buyPika(sel)) {
-                // Refresh list and details
+                SoundManager.playBuy();
                 refreshDex(listDex);
                 updateLabels();
             }
@@ -397,8 +425,8 @@ public class TowerDefense extends Application {
     }
 
     private void openPokedex() {
-        VBox centerBox = (VBox) ((BorderPane) pokedexMenu.getChildren().get(1)).getCenter();
-        HBox hbox = (HBox) ((BorderPane) pokedexMenu.getChildren().get(1)).getCenter();
+        BorderPane bp = (BorderPane) pokedexMenu.getChildren().get(1);
+        HBox hbox = (HBox) bp.getCenter();
         @SuppressWarnings("unchecked")
         ListView<Pokemon> listDex = (ListView<Pokemon>) hbox.getChildren().get(0);
         refreshDex(listDex);
@@ -462,6 +490,7 @@ public class TowerDefense extends Application {
             timeline.stop();
         }
         waveTime = 0;
+        SoundManager.playWaveStart();
         initTimeline();
         timeline.playFromStart();
     }
@@ -491,6 +520,7 @@ public class TowerDefense extends Application {
 
                         // Defeat condition
                         if (entities.getTowerHealth() < 1) {
+                            SoundManager.playGameOver();
                             towerLife.setText("Palestra Caduta!");
                             towerLife.setTextFill(Color.RED);
                             backdrop.setEffect(new BoxBlur());
