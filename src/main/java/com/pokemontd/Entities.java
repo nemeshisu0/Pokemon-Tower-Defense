@@ -22,12 +22,17 @@ public class Entities {
     private final int MAX_TOWER_HEALTH = 25;
     private Integer towerHealth = MAX_TOWER_HEALTH;
     private Store store;
+    private GameTelemetry telemetry;
 
     public Entities(Store store) {
         this.store = store;
         pikas.setMouseTransparent(true);
         allTrainers.setMouseTransparent(true);
         combatTextGroup.setMouseTransparent(true);
+    }
+
+    public void setTelemetry(GameTelemetry telemetry) {
+        this.telemetry = telemetry;
     }
 
     public void updateAll() {
@@ -85,6 +90,9 @@ public class Entities {
 
     public void createNewTrainer(int level, boolean isBoss) {
         Trainer newTrainer = isBoss ? createBossTrainer(level) : randomTrainer(level);
+        if (telemetry != null) {
+            telemetry.recordEnemySpawned(newTrainer);
+        }
         trainers.add(newTrainer);
         trainersWballs.add(newTrainer.getGroup());
         newTrainer.update(newTrainer.getGroup());
@@ -237,10 +245,16 @@ public class Entities {
             if (trainer.getX() < 190 && trainer.getY() < 110) {
                 int dmg = trainer.isBoss() ? 3 : 1;
                 towerHealth = Math.max(0, towerHealth - dmg);
+                if (telemetry != null) {
+                    telemetry.recordEnemyLeak(trainer, dmg);
+                }
                 SoundManager.playHit();
                 spawnFloatingText(trainer.getX(), trainer.getY() - 15, "-" + dmg + " ❤️ PALESTRA!", Color.RED);
                 dead.add(trainer);
             } else if (trainer.getHealth() < 1) {
+                if (telemetry != null) {
+                    telemetry.recordEnemyDefeated(trainer);
+                }
                 dead.add(trainer);
             }
         }
@@ -276,6 +290,14 @@ public class Entities {
                 Trainer target = a.getTarget();
 
                 DamageResult res = target.takeDamage(a.getAtk(), pType);
+
+                if (telemetry != null) {
+                    telemetry.recordDamageDealt(poke != null ? poke.getName() : "Sconosciuto",
+                                                res.damage,
+                                                res.multiplier > 1.0,
+                                                res.appliedParalysis,
+                                                res.appliedBurn);
+                }
 
                 // Sound & Floating combat text
                 if (res.multiplier > 1.0) {

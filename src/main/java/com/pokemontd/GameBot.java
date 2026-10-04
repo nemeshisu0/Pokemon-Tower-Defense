@@ -1,7 +1,6 @@
 package com.pokemontd;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * GameBot: Autonomous AI agent for gameplay automation, power system testing,
@@ -39,13 +38,20 @@ public class GameBot {
         new Coord(160, 209)  // Grass 4: top-left
     };
 
-    public GameBot(TowerDefense game, Store store, Entities entities) {
+    private final GameTelemetry telemetry;
+
+    public GameBot(TowerDefense game, Store store, Entities entities, GameTelemetry telemetry) {
         this.game = game;
         this.store = store;
         this.entities = entities;
+        this.telemetry = telemetry;
         this.grassMap = new GrassMap();
         this.previousHealth = entities.getTowerHealth();
         addLog("Bot AI inizializzato. Pronto all'uso.");
+    }
+
+    public GameTelemetry getTelemetry() {
+        return telemetry;
     }
 
     public boolean isEnabled() {
@@ -54,6 +60,9 @@ public class GameBot {
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
+        if (telemetry != null) {
+            telemetry.setBotControlled(enabled);
+        }
         if (enabled) {
             currentStatus = "AI Attiva - In analisi tattica...";
             addLog("🤖 Bot AI ATTIVATO.");
@@ -74,8 +83,28 @@ public class GameBot {
         totalDamageSustained = 0;
         highestWaveReached = 1;
         previousHealth = 25;
+        if (telemetry != null) {
+            telemetry.reset();
+        }
         recentLogs.clear();
         addLog("Sistema riavviato. Statistiche resettate.");
+    }
+
+    public String getRosterSummary() {
+        Map<String, Integer> counts = new HashMap<>();
+        for (Turret t : entities.getTurrets()) {
+            Pokemon p = t.getAssignedPokemon();
+            if (p != null) {
+                counts.put(p.getName(), counts.getOrDefault(p.getName(), 0) + 1);
+            }
+        }
+        if (counts.isEmpty()) return "Nessuna";
+        StringBuilder sb = new StringBuilder();
+        for (Map.Entry<String, Integer> e : counts.entrySet()) {
+            if (sb.length() > 0) sb.append(", ");
+            sb.append(e.getKey()).append(" x").append(e.getValue());
+        }
+        return sb.toString();
     }
 
     /**

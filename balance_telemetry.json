@@ -1,0 +1,98 @@
+{
+  "sessionTimestamp": "2026-10-04 21:01:35",
+  "mode": "BOT_AI",
+  "status": "TEST_COMPLETED",
+  "highestWave": 3,
+  "gymHealth": 25,
+  "maxGymHealth": 25,
+  "totalDamageGym": 0,
+  "cleanWaves": 3,
+  "waves": [
+    {
+      "wave": 1,
+      "isBoss": false,
+      "spawned": 1,
+      "killed": 1,
+      "leaked": 0,
+      "damageGym": 0,
+      "durationTicks": 0,
+      "endGold": 180,
+      "turrets": 1,
+      "dps": 8.3,
+      "outcome": "⭐ PERFETTA"
+    },
+    {
+      "wave": 2,
+      "isBoss": false,
+      "spawned": 1,
+      "killed": 1,
+      "leaked": 0,
+      "damageGym": 0,
+      "durationTicks": 0,
+      "endGold": 290,
+      "turrets": 2,
+      "dps": 16.7,
+      "outcome": "⭐ PERFETTA"
+    },
+    {
+      "wave": 3,
+      "isBoss": false,
+      "spawned": 0,
+      "killed": 0,
+      "leaked": 0,
+      "damageGym": 0,
+      "durationTicks": 0,
+      "endGold": 420,
+      "turrets": 2,
+      "dps": 24.5,
+      "outcome": "⭐ PERFETTA"
+    }
+  ],
+  "pokemonStats": {
+    "Rattata": {
+      "damage": 38,
+      "shots": 2,
+      "superEffective": 0,
+      "paralysis": 0,
+      "burn": 0
+    },
+    "Pikachu": {
+      "damage": 42,
+      "shots": 1,
+      "superEffective": 1,
+      "paralysis": 1,
+      "burn": 0
+    },
+    "Squirtle": {
+      "damage": 0,
+      "shots": 0,
+      "superEffective": 0,
+      "paralysis": 0,
+      "burn": 0
+    },
+    "Charizard": {
+      "damage": 0,
+      "shots": 0,
+      "superEffective": 0,
+      "paralysis": 0,
+      "burn": 0
+    }
+  },
+  "enemyStats": {
+    "Pescatore": {
+      "spawned": 2,
+      "killed": 0,
+      "leaked": 0
+    },
+    "Fantallenatore": {
+      "spawned": 0,
+      "killed": 1,
+      "leaked": 0
+    },
+    "Centauro": {
+      "spawned": 0,
+      "killed": 1,
+      "leaked": 0
+    }
+  }
+}

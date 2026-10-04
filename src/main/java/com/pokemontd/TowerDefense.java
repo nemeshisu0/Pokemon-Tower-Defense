@@ -91,6 +91,7 @@ public class TowerDefense extends Application {
     private Label pauseText;
 
     // Autonomous AI Bot & Telemetry
+    private final GameTelemetry telemetry = new GameTelemetry();
     private GameBot gameBot;
     private Button botHudBtn;
     private Button rightPanelBotToggleBtn;
@@ -100,6 +101,7 @@ public class TowerDefense extends Application {
     private Label botWavesLabel;
     private Label botDamageLabel;
     private Label botBalanceLabel;
+    private Label botExportLabel;
     private VBox botLogBox;
 
     // Sidebars Live Info
@@ -109,7 +111,8 @@ public class TowerDefense extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         this.primaryStage = stage;
-        this.gameBot = new GameBot(this, store, entities);
+        this.entities.setTelemetry(telemetry);
+        this.gameBot = new GameBot(this, store, entities, telemetry);
 
         // GameWindow Backdrop
         backdrop = new Group(background.getImageView(), tower.getImageView());
@@ -474,6 +477,18 @@ public class TowerDefense extends Application {
         initLog.setStyle("-fx-font-size: 9px; -fx-text-fill: #8b949e; -fx-font-family: monospace;");
         botLogBox.getChildren().add(initLog);
 
+        Button exportReportBtn = new Button("📄 Esporta Report (.md/.json)");
+        exportReportBtn.setMaxWidth(Double.MAX_VALUE);
+        exportReportBtn.setStyle("-fx-font-size: 10px; -fx-background-color: #21262d; -fx-text-fill: #58a6ff; -fx-border-color: #30363d; -fx-padding: 4 8; -fx-font-weight: bold;");
+        exportReportBtn.setOnAction(e -> {
+            telemetry.exportReports(entities.getTowerHealth(), entities.getMaxTowerHealth(), gameOn ? "IN_CORSO" : "ATTESA");
+            updateLabels();
+        });
+
+        botExportLabel = new Label("📁 Report: balance_report.md");
+        botExportLabel.setStyle("-fx-font-size: 9px; -fx-text-fill: #7d8590;");
+        botExportLabel.setWrapText(true);
+
         botCard.getChildren().addAll(
             rightPanelBotToggleBtn,
             rightPanelSpeedBtn,
@@ -482,6 +497,8 @@ public class TowerDefense extends Application {
             botWavesLabel,
             botDamageLabel,
             botBalanceLabel,
+            exportReportBtn,
+            botExportLabel,
             logsTitle,
             botLogBox
         );
@@ -978,6 +995,21 @@ public class TowerDefense extends Application {
         spawned = 0;
         waveTime = 0;
         SoundManager.playWaveStart();
+
+        boolean isBoss = (level % 5 == 0);
+        String bossName = "";
+        if (isBoss) {
+            Trainer b = entities.createBossTrainer(level);
+            bossName = b.getTrainerName();
+        }
+        telemetry.onWaveStarted(level,
+                                store.getMoney(),
+                                entities.getTurrets().size(),
+                                gameBot != null ? gameBot.getRosterSummary() : "N/D",
+                                gameBot != null ? gameBot.calculateTotalDps() : 0.0,
+                                isBoss,
+                                bossName);
+
         updateLabels();
     }
 
@@ -1002,6 +1034,7 @@ public class TowerDefense extends Application {
                                 if (gameBot != null) {
                                     gameBot.onWaveCompleted(level);
                                 }
+                                telemetry.onWaveCompleted(level, store.getMoney(), entities.getTowerHealth(), entities.getMaxTowerHealth());
                                 level++;
                                 spawned = 0;
                                 waveTime = 0;
@@ -1018,10 +1051,12 @@ public class TowerDefense extends Application {
                                 towerLife.setText("Palestra Caduta! (0/" + entities.getMaxTowerHealth() + ")");
                                 towerLife.setTextFill(Color.RED);
                                 backdrop.setEffect(new BoxBlur());
+                                telemetry.onGameOver(level, store.getMoney(), entities.getMaxTowerHealth());
                                 VBox box = (VBox) gameOverMenu.getChildren().get(1);
                                 Label waveLbl = (Label) box.getChildren().get(1);
                                 waveLbl.setText("Ondata raggiunta: " + level);
                                 gameOverMenu.setVisible(true);
+                                updateLabels();
                             }
                         }
                     }
@@ -1066,6 +1101,10 @@ public class TowerDefense extends Application {
             }
         }
 
+        if (botExportLabel != null) {
+            botExportLabel.setText("📁 " + telemetry.getLastExportStatus());
+        }
+
         if (gameBot != null) {
             if (botStatusLabel != null) {
                 botStatusLabel.setText("Stato: " + gameBot.getCurrentStatus());
@@ -1107,6 +1146,7 @@ public class TowerDefense extends Application {
         waveTime = 0;
         entities.reset();
         store.reset();
+        telemetry.reset();
         if (gameBot != null) {
             gameBot.reset();
         }
@@ -1125,6 +1165,8 @@ public class TowerDefense extends Application {
     }
 
     public void wave() {
+        telemetry.tick();
+
         if (!gameOn) {
             if (gameBot != null) {
                 gameBot.tick(false, level);
