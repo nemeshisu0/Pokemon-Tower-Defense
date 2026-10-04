@@ -27,7 +27,7 @@ public class Entities {
 
     public void add(Turret t) {
         turrets.add(t);
-        turretGroup.getChildren().add(t.getImageView());
+        turretGroup.getChildren().add(t.getView());
     }
 
     public ArrayList<Turret> getTurrets() {
@@ -93,14 +93,23 @@ public class Entities {
         for (int i = 0; i < turrets.size(); i++) {
             Turret turret = turrets.get(i);
             turret.reload();
+            Pokemon poke = turret.getAssignedPokemon();
+            if (poke == null) {
+                continue;
+            }
+
             for (int j = 0; j < trainers.size(); j++) {
                 if (turret.hasShot()) {
                     break;
                 }
                 Trainer trainer = trainers.get(j);
-                int rand = (int) (Math.random() * 200);
-                if (rand == 1 || turret.shotTimer() > 500) {
-                    if (Math.abs(turret.getX() - trainer.getX()) < 75 && Math.abs(turret.getY() - trainer.getY()) < 87) {
+
+                // Distance between turret center and trainer center
+                double dist = Math.hypot((turret.getX() + 8) - (trainer.getX() + 8),
+                                         (turret.getY() + 8) - (trainer.getY() + 8));
+
+                if (turret.shotTimer() >= poke.getCooldown()) {
+                    if (dist <= poke.getRange()) {
                         Attacker pika = turret.shoot(trainer);
                         if (pika != null) {
                             add(pika);
@@ -176,7 +185,7 @@ public class Entities {
         atkers.clear();
 
         for (Turret t : turrets) {
-            turretGroup.getChildren().remove(t.getImageView());
+            turretGroup.getChildren().remove(t.getView());
         }
         turrets.clear();
 

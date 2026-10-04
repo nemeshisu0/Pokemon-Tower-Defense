@@ -15,12 +15,12 @@ public class Store {
 
     private void initStore() {
         inventory.clear();
-        inventory.add(new Pokemon("Pikachu", "/Resource/pikachu.png", 15, 500));
-        inventory.add(new Pokemon("Squirtle", "/Resource/squirtle.png", 30, 1000));
-        inventory.add(new Pokemon("Charizard", "/Resource/charizard.png", 50, 2000));
+        inventory.add(new Pokemon("Pikachu", "/Resource/pikachu.png", 15, 500, 95, 80, "Attacco elettrico rapido a medio raggio."));
+        inventory.add(new Pokemon("Squirtle", "/Resource/squirtle.png", 30, 1000, 110, 110, "Getto d'acqua potente a lungo raggio."));
+        inventory.add(new Pokemon("Charizard", "/Resource/charizard.png", 60, 2000, 130, 150, "Devastante lanciafiamme ad ampissimo raggio."));
 
         unlockedPokemon.clear();
-        unlockedPokemon.add(new Pokemon("Rattata", "/Resource/rattata.png", 5, 0));
+        unlockedPokemon.add(new Pokemon("Rattata", "/Resource/rattata.png", 5, 0, 80, 90, "Attacco rapido iniziale a corto raggio."));
     }
 
     public void reset() {
@@ -29,15 +29,17 @@ public class Store {
         initStore();
     }
 
-    public void buyPika(int indPika) {
+    public boolean buyPika(int indPika) {
         if (indPika >= 0 && indPika < inventory.size()) {
             Pokemon p = inventory.get(indPika);
             if (p.getPrice() <= money) {
                 spend(p.getPrice());
                 inventory.remove(indPika);
                 unlockedPokemon.add(p);
+                return true;
             }
         }
+        return false;
     }
 
     public ArrayList<Pokemon> getInventory() {
