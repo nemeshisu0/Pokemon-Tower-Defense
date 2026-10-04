@@ -18,6 +18,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.Group;
 import javafx.scene.image.Image;
@@ -61,8 +62,8 @@ public class TowerDefense extends Application {
 
     // Game Content & Responsive Wrapper
     final private Group gameContent = new Group();
-    final private Group scalableGameGroup = new Group();
-    private StackPane centerGamePane;
+    private Pane centerGamePane;
+    private double currentScale = 1.0;
 
     // Range Indicator
     private Circle rangeIndicator;
@@ -283,14 +284,29 @@ public class TowerDefense extends Application {
 
         // Setup Main Scalable Container
         gameContent.getChildren().addAll(gameWindow, mainMenu, pokedexMenu, settingsMenu, gameOverMenu);
-        scalableGameGroup.getChildren().add(gameContent);
+        gameContent.setManaged(false); // Unmanaged so its scaled size does not cause parent resize loops
 
-        centerGamePane = new StackPane(scalableGameGroup);
+        centerGamePane = new Pane(gameContent) {
+            @Override
+            protected void layoutChildren() {
+                double w = getWidth();
+                double h = getHeight();
+                if (w > 0 && h > 0) {
+                    double scale = Math.min(w / WIDTH, h / HEIGHT);
+                    scale = Math.max(0.2, scale);
+                    if (Math.abs(scale - currentScale) > 0.001) {
+                        currentScale = scale;
+                        gameContent.setScaleX(scale);
+                        gameContent.setScaleY(scale);
+                    }
+                    // Perfect centering
+                    gameContent.setLayoutX((w - WIDTH) / 2.0);
+                    gameContent.setLayoutY((h - HEIGHT) / 2.0);
+                }
+            }
+        };
         centerGamePane.setStyle("-fx-background-color: #0b0e14;");
-
-        // Dynamic Resizing & Aspect-Ratio Scaling
-        centerGamePane.widthProperty().addListener((obs, oldVal, newVal) -> updateScale());
-        centerGamePane.heightProperty().addListener((obs, oldVal, newVal) -> updateScale());
+        centerGamePane.setMinSize(0, 0);
 
         // Build Lateral Sidebars for PC Widescreen
         VBox leftSidebar = buildLeftSidebar();
@@ -327,22 +343,6 @@ public class TowerDefense extends Application {
 
         primaryStage.setScene(scene);
         primaryStage.show();
-    }
-
-    private void updateScale() {
-        double availW = centerGamePane.getWidth();
-        double availH = centerGamePane.getHeight();
-        if (availW <= 0 || availH <= 0) return;
-
-        double scaleX = availW / WIDTH;
-        double scaleY = availH / HEIGHT;
-        double scale = Math.min(scaleX, scaleY);
-
-        // Maintain sharp pixel scaling, at least 0.5x
-        scale = Math.max(0.5, scale);
-
-        gameContent.setScaleX(scale);
-        gameContent.setScaleY(scale);
     }
 
     private VBox buildLeftSidebar() {
