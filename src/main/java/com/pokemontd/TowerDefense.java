@@ -239,6 +239,9 @@ public class TowerDefense extends Application {
         updateLabels();
         Scene scene = new Scene(root, WIDTH, HEIGHT);
         primaryStage.setTitle("Pokemon Tower Defense");
+        try {
+            primaryStage.getIcons().add(new Image(TowerDefense.class.getResourceAsStream("/Resource/app_icon.png")));
+        } catch (Exception ignored) {}
         primaryStage.setScene(scene);
         primaryStage.show();
     }
