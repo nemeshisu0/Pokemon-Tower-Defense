@@ -1,0 +1,14 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Pokemon Tower Defense (Dev & AI Bot)
+GenericName=Tower Defense Game (Developer Edition)
+Comment=Pokemon Tower Defense - Versione Sviluppatore con Bot AI e Telemetria
+Exec="/home/nemesy/Documents/progetti stani miei/antycly ide/run-dev.sh"
+Path=/home/nemesy/Documents/progetti stani miei/antycly ide
+Icon=/home/nemesy/.local/share/icons/pokemon-tower-defense-dev.png
+Terminal=false
+Categories=Game;StrategyGame;Development;
+StartupNotify=true
+StartupWMClass=com.pokemontd.Main
+Keywords=pokemon;tower;defense;dev;ai;bot;telemetry;sviluppatore;
