@@ -14,6 +14,7 @@ import javafx.scene.effect.DropShadow;
 import javafx.scene.control.ListView;
 import javafx.scene.control.Label;
 import javafx.scene.control.Button;
+import javafx.scene.control.Slider;
 import javafx.scene.layout.VBox;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.BorderPane;
@@ -376,11 +377,11 @@ public class TowerDefense extends Application {
 
         Label el1 = new Label("⚡ Elettro ➔ 💧 Acqua");
         el1.setStyle("-fx-font-size: 11px; -fx-text-fill: #f1c40f;");
-        Label el2 = new Label("💧 Acqua ➔ 🔥 Fuoco");
+        Label el2 = new Label("💧 Acqua ➔ 🔥 Fuoco & 🪨 Roccia");
         el2.setStyle("-fx-font-size: 11px; -fx-text-fill: #3498db;");
         Label el3 = new Label("🔥 Fuoco ➔ 🌿 Erba");
         el3.setStyle("-fx-font-size: 11px; -fx-text-fill: #e74c3c;");
-        Label el4 = new Label("⚪ Normale: Danno base");
+        Label el4 = new Label("⚪ Normale: Base (Debole vs 🪨)");
         el4.setStyle("-fx-font-size: 11px; -fx-text-fill: #95a5a6;");
 
         typesCard.getChildren().addAll(typeTitle, el1, el2, el3, el4);
@@ -389,15 +390,17 @@ public class TowerDefense extends Application {
         VBox statusCard = new VBox(6);
         statusCard.setPadding(new Insets(10));
         statusCard.setStyle("-fx-background-color: #0d1117; -fx-background-radius: 6; -fx-border-color: #30363d; -fx-border-radius: 6;");
-        Label statusTitle = new Label("EFFETTI DI STATO:");
+        Label statusTitle = new Label("EFFETTI & CAPIPALESTRA:");
         statusTitle.setStyle("-fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: #8b949e;");
 
         Label st1 = new Label("⚡ Paralisi: -50% velocità");
         st1.setStyle("-fx-font-size: 10px; -fx-text-fill: #f39c12;");
         Label st2 = new Label("🔥 Scottatura: Danno continuo");
         st2.setStyle("-fx-font-size: 10px; -fx-text-fill: #e67e22;");
+        Label st3 = new Label("👑 Boss ogni 5 ondate (-3 ❤️)");
+        st3.setStyle("-fx-font-size: 10px; -fx-font-weight: bold; -fx-text-fill: #f1c40f;");
 
-        statusCard.getChildren().addAll(statusTitle, st1, st2);
+        statusCard.getChildren().addAll(statusTitle, st1, st2, st3);
 
         // Sidebar Footer placeholder
         leftPanelStatus = new Label("Pronto all'azione");
@@ -562,17 +565,67 @@ public class TowerDefense extends Application {
             primaryStage.centerOnScreen();
         });
 
-        // Audio & Speed Toggles
-        Label gameplayHeader = new Label("PREFERENZE:");
-        gameplayHeader.setStyle("-fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: #8b949e;");
+        // Audio & Volume Section
+        Label audioHeader = new Label("🔊 AUDIO & VOLUME:");
+        audioHeader.setStyle("-fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: #8b949e;");
 
-        Button audioToggleBtn = new Button("Effetti Audio: " + (SoundManager.isMuted() ? "Disattivi 🔇" : "Attivi 🔊"));
-        audioToggleBtn.setStyle("-fx-font-size: 11px; -fx-padding: 6 12; -fx-background-color: #21262d; -fx-text-fill: #c9d1d9; -fx-border-color: #30363d;");
+        Label volValueLabel = new Label("Volume: " + SoundManager.getVolumePercent() + "%");
+        volValueLabel.setStyle("-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #58a6ff;");
+
+        Slider volSlider = new Slider(0, 100, SoundManager.getVolumePercent());
+        volSlider.setPrefWidth(190);
+        volSlider.setShowTickMarks(false);
+
+        Button volDownBtn = new Button("➖");
+        volDownBtn.setStyle("-fx-font-size: 11px; -fx-padding: 4 10; -fx-background-color: #21262d; -fx-text-fill: #c9d1d9; -fx-border-color: #30363d;");
+
+        Button volUpBtn = new Button("➕");
+        volUpBtn.setStyle("-fx-font-size: 11px; -fx-padding: 4 10; -fx-background-color: #21262d; -fx-text-fill: #c9d1d9; -fx-border-color: #30363d;");
+
+        Button audioToggleBtn = new Button(SoundManager.isMuted() ? "🔇 Muto" : "🔊 Audio Attivo");
+        audioToggleBtn.setStyle("-fx-font-size: 11px; -fx-padding: 6 14; -fx-background-color: #21262d; -fx-text-fill: #c9d1d9; -fx-border-color: #30363d;");
+
+        Runnable updateVolumeUI = () -> {
+            int pct = SoundManager.getVolumePercent();
+            volValueLabel.setText("Volume: " + pct + "%");
+            audioToggleBtn.setText(SoundManager.isMuted() ? "🔇 Muto" : "🔊 Audio Attivo");
+            muteBtn.setText(SoundManager.isMuted() ? "🔇" : "🔊");
+        };
+
+        volSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
+            SoundManager.setVolume(newVal.doubleValue() / 100.0);
+            updateVolumeUI.run();
+        });
+
+        volSlider.setOnMouseReleased(e -> SoundManager.playPreviewBeep());
+
+        volDownBtn.setOnAction(e -> {
+            double newV = Math.max(0.0, SoundManager.getVolume() - 0.10);
+            SoundManager.setVolume(newV);
+            volSlider.setValue(newV * 100);
+            updateVolumeUI.run();
+            SoundManager.playPreviewBeep();
+        });
+
+        volUpBtn.setOnAction(e -> {
+            double newV = Math.min(1.0, SoundManager.getVolume() + 0.10);
+            SoundManager.setVolume(newV);
+            volSlider.setValue(newV * 100);
+            updateVolumeUI.run();
+            SoundManager.playPreviewBeep();
+        });
+
         audioToggleBtn.setOnAction(e -> {
             SoundManager.toggleMute();
-            muteBtn.setText(SoundManager.isMuted() ? "🔇" : "🔊");
-            audioToggleBtn.setText("Effetti Audio: " + (SoundManager.isMuted() ? "Disattivi 🔇" : "Attivi 🔊"));
+            volSlider.setValue(SoundManager.getVolumePercent());
+            updateVolumeUI.run();
+            if (!SoundManager.isMuted()) {
+                SoundManager.playPreviewBeep();
+            }
         });
+
+        HBox sliderRow = new HBox(6, volDownBtn, volSlider, volUpBtn);
+        sliderRow.setAlignment(Pos.CENTER);
 
         Button closeBtn = new Button("❮ Torna Indietro");
         closeBtn.setStyle("-fx-font-size: 12px; -fx-font-weight: bold; -fx-padding: 8 20; -fx-background-color: #34495e; -fx-text-fill: white;");
@@ -585,7 +638,9 @@ public class TowerDefense extends Application {
             btnFhd,
             btnHd,
             btnCompact,
-            gameplayHeader,
+            audioHeader,
+            volValueLabel,
+            sliderRow,
             audioToggleBtn,
             closeBtn
         );
@@ -804,10 +859,16 @@ public class TowerDefense extends Application {
                         wave();
 
                         // Wave completed condition
-                        if (spawned == level && entities.getTrainers().isEmpty()) {
+                        boolean isBossWave = (level % 5 == 0);
+                        int totalEnemies = isBossWave ? (4 + level) : Math.min(28, 2 + level * 2);
+                        if (spawned >= totalEnemies && entities.getTrainers().isEmpty()) {
+                            int waveBonus = 35 + level * 15;
+                            store.spend(-waveBonus);
+                            SoundManager.playWaveStart();
                             level++;
                             spawned = 0;
-                            startWaveButton.setText("Inizia Ondata " + level + " ❯");
+                            waveTime = 0;
+                            startWaveButton.setText("▶ Inizia Ondata " + level + " (+$" + waveBonus + " Bonus!)");
                             backdrop.setEffect(new BoxBlur());
                             mainMenu.setVisible(true);
                             if (timeline != null) {
@@ -818,7 +879,7 @@ public class TowerDefense extends Application {
                         // Defeat condition
                         if (entities.getTowerHealth() < 1) {
                             SoundManager.playGameOver();
-                            towerLife.setText("Palestra Caduta!");
+                            towerLife.setText("Palestra Caduta! (0/" + entities.getMaxTowerHealth() + ")");
                             towerLife.setTextFill(Color.RED);
                             backdrop.setEffect(new BoxBlur());
                             if (timeline != null) {
@@ -837,15 +898,38 @@ public class TowerDefense extends Application {
         creditLabel.setText("💰 $" + store.getMoney());
         turretCostLabel.setText("🌿 Cespuglio: $" + store.getTurretPrice());
         bank.setText("Fondi: $" + store.getMoney());
-        towerLife.setText("❤️ " + entities.getTowerHealth());
+
+        int hp = entities.getTowerHealth();
+        int maxHp = entities.getMaxTowerHealth();
+        towerLife.setText("❤️ " + hp + " / " + maxHp);
+        if (hp > 15) {
+            towerLife.setTextFill(Color.rgb(46, 204, 113));
+        } else if (hp > 7) {
+            towerLife.setTextFill(Color.rgb(243, 156, 18));
+        } else {
+            towerLife.setTextFill(Color.rgb(231, 76, 60));
+        }
+
         int alive = entities.getTrainers().size();
-        waveStatusLabel.setText("Ondata " + level + " (" + alive + "/" + level + ")");
+        boolean isBossWave = (level % 5 == 0);
+        int totalEnemies = isBossWave ? (4 + level) : Math.min(28, 2 + level * 2);
+        if (isBossWave) {
+            waveStatusLabel.setText("👑 BOSS " + level + " (" + alive + "/" + totalEnemies + ")");
+            waveStatusLabel.setTextFill(Color.rgb(241, 196, 15));
+        } else {
+            waveStatusLabel.setText("Ondata " + level + " (" + alive + "/" + totalEnemies + ")");
+            waveStatusLabel.setTextFill(Color.rgb(52, 152, 219));
+        }
 
         if (rightPanelGymHp != null) {
-            rightPanelGymHp.setText("❤️ Salute: " + entities.getTowerHealth() + " / 1000");
+            rightPanelGymHp.setText("❤️ Salute: " + hp + " / " + maxHp);
         }
         if (leftPanelStatus != null) {
-            leftPanelStatus.setText(gameOn ? "Battaglia in corso..." : "In attesa dell'ondata");
+            if (gameOn) {
+                leftPanelStatus.setText(isBossWave ? "👑 BATTAGLIA CAPOPALESTRA!" : "Battaglia in corso...");
+            } else {
+                leftPanelStatus.setText("In attesa dell'ondata " + level);
+            }
         }
     }
 
@@ -865,7 +949,7 @@ public class TowerDefense extends Application {
         waveTime = 0;
         entities.reset();
         store.reset();
-        towerLife.setTextFill(Color.rgb(231, 76, 60));
+        towerLife.setTextFill(Color.rgb(46, 204, 113));
         startWaveButton.setText("▶ Inizia Ondata 1");
         updateLabels();
 
@@ -877,10 +961,15 @@ public class TowerDefense extends Application {
         waveTime++;
         updateLabels();
 
+        boolean isBossWave = (level % 5 == 0);
+        int totalEnemies = isBossWave ? (4 + level) : Math.min(28, 2 + level * 2);
+        int spawnInterval = Math.max(65, 190 - level * 5);
+
         // Spawn new trainer
-        if (waveTime % (100 + 500 / level) == 0 && level > entities.getTrainers().size() && spawned < level) {
+        if (waveTime % spawnInterval == 0 && spawned < totalEnemies) {
             spawned++;
-            entities.createNewTrainer(level);
+            boolean spawnBossNow = (isBossWave && spawned == totalEnemies);
+            entities.createNewTrainer(level, spawnBossNow);
         }
 
         // Move trainers
@@ -891,11 +980,6 @@ public class TowerDefense extends Application {
 
         // Move attackers
         entities.moveAttackers();
-
-        // Passive income over time (+1 every 20 ticks)
-        if (waveTime % 20 == 0) {
-            store.spend(-1);
-        }
 
         entities.updateAll();
     }

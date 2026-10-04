@@ -20,15 +20,23 @@ public class Trainer extends Moveable {
     private int paralyzeTicks = 0;
     private int burnTicks = 0;
     private int burnTimer = 0;
+    private boolean isBoss = false;
+    private int level = 1;
     private Label statusLabel;
     private Label nameLabel;
 
     public Trainer(String location, int xloc, int yloc, int health, String trainerName, PokemonType type) {
-        super(location, xloc, yloc, 1);
+        this(location, xloc, yloc, health, trainerName, type, 1, false, 1);
+    }
+
+    public Trainer(String location, int xloc, int yloc, int health, String trainerName, PokemonType type, int speed, boolean isBoss, int level) {
+        super(location, xloc, yloc, speed);
         this.health = health;
         this.maxHealth = Math.max(1, health);
         this.trainerName = trainerName;
         this.type = type;
+        this.isBoss = isBoss;
+        this.level = level;
 
         Coord one = new Coord(202, 586);
         Coord two = new Coord(105, 586);
@@ -51,9 +59,16 @@ public class Trainer extends Moveable {
         statusLabel.setTranslateX(-2);
         statusLabel.setTranslateY(-20);
 
-        nameLabel = new Label(trainerName + " [" + type.getDisplayName() + "]");
-        nameLabel.setStyle("-fx-font-size: 8px; -fx-font-weight: bold; -fx-text-fill: " + type.getColorHex() + "; -fx-background-color: rgba(255,255,255,0.75); -fx-background-radius: 3; -fx-padding: 0 2;");
-        nameLabel.setTranslateX(-15);
+        nameLabel = new Label();
+        if (isBoss) {
+            nameLabel.setText("⭐ " + trainerName + " [" + type.getDisplayName() + "] ⭐");
+            nameLabel.setStyle("-fx-font-size: 9px; -fx-font-weight: bold; -fx-text-fill: #ffd700; -fx-background-color: rgba(15, 20, 25, 0.90); -fx-background-radius: 4; -fx-padding: 1 5; -fx-border-color: #f1c40f; -fx-border-width: 1; -fx-border-radius: 4;");
+            nameLabel.setTranslateX(-25);
+        } else {
+            nameLabel.setText(trainerName + " [" + type.getDisplayName() + "]");
+            nameLabel.setStyle("-fx-font-size: 8px; -fx-font-weight: bold; -fx-text-fill: " + type.getColorHex() + "; -fx-background-color: rgba(255,255,255,0.85); -fx-background-radius: 3; -fx-padding: 0 2;");
+            nameLabel.setTranslateX(-15);
+        }
         nameLabel.setTranslateY(24);
 
         updateBalls();
@@ -176,5 +191,13 @@ public class Trainer extends Moveable {
 
     public boolean isBurned() {
         return burnTicks > 0;
+    }
+
+    public boolean isBoss() {
+        return isBoss;
+    }
+
+    public int getLevel() {
+        return level;
     }
 }

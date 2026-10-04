@@ -5,7 +5,8 @@ public enum PokemonType {
     FIRE("Fuoco", "#e74c3c"),
     WATER("Acqua", "#3498db"),
     ELECTRIC("Elettro", "#f1c40f"),
-    GRASS("Erba", "#2ecc71");
+    GRASS("Erba", "#2ecc71"),
+    ROCK("Roccia", "#b3886b");
 
     private final String displayName;
     private final String colorHex;
@@ -27,24 +28,28 @@ public enum PokemonType {
         if (target == null) return 1.0;
         switch (this) {
             case WATER:
-                if (target == FIRE) return 2.0;
+                if (target == FIRE || target == ROCK) return 2.0;
                 if (target == WATER || target == GRASS) return 0.5;
                 break;
             case FIRE:
                 if (target == GRASS) return 2.0;
-                if (target == WATER || target == FIRE) return 0.5;
+                if (target == WATER || target == FIRE || target == ROCK) return 0.5;
                 break;
             case ELECTRIC:
                 if (target == WATER) return 2.0;
-                if (target == ELECTRIC || target == GRASS) return 0.5;
+                if (target == ELECTRIC || target == GRASS || target == ROCK) return 0.5;
                 break;
             case GRASS:
-                if (target == WATER) return 2.0;
+                if (target == WATER || target == ROCK) return 2.0;
                 if (target == FIRE || target == GRASS) return 0.5;
                 break;
             case NORMAL:
-            default:
+                if (target == ROCK) return 0.6; // Rock armor resists basic normal attacks!
                 return 1.0;
+            case ROCK:
+                if (target == FIRE) return 2.0;
+                if (target == WATER || target == GRASS) return 0.5;
+                break;
         }
         return 1.0;
     }

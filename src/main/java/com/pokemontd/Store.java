@@ -7,7 +7,7 @@ public class Store {
     private ArrayList<Pokemon> inventory = new ArrayList<Pokemon>();
     private ArrayList<Pokemon> unlockedPokemon = new ArrayList<Pokemon>();
     private int money = 200;
-    private int turretPrice = 100;
+    private int turretsPlaced = 0;
 
     public Store() {
         initStore();
@@ -15,17 +15,17 @@ public class Store {
 
     private void initStore() {
         inventory.clear();
-        inventory.add(new Pokemon("Pikachu", "/Resource/pikachu.png", PokemonType.ELECTRIC, 15, 500, 95, 80, "Attacco elettrico a medio raggio. Può paralizzare!"));
-        inventory.add(new Pokemon("Squirtle", "/Resource/squirtle.png", PokemonType.WATER, 30, 1000, 110, 110, "Getto d'acqua a lungo raggio ad alto impatto."));
-        inventory.add(new Pokemon("Charizard", "/Resource/charizard.png", PokemonType.FIRE, 60, 2000, 130, 150, "Lanciafiamme devastante ad ampissimo raggio. Può scottare!"));
+        inventory.add(new Pokemon("Pikachu", "/Resource/pikachu.png", PokemonType.ELECTRIC, 14, 250, 95, 65, "Attacco elettrico rapido. 35% paralisi (-50% vel). Devasta Acqua (2x)!"));
+        inventory.add(new Pokemon("Squirtle", "/Resource/squirtle.png", PokemonType.WATER, 32, 500, 115, 90, "Getto d'acqua ad alto impatto. Devasta Fuoco e Roccia (2x)!"));
+        inventory.add(new Pokemon("Charizard", "/Resource/charizard.png", PokemonType.FIRE, 75, 1000, 135, 120, "Lanciafiamme devastante ad ampio raggio. 45% scottatura. Devasta Erba (2x)!"));
 
         unlockedPokemon.clear();
-        unlockedPokemon.add(new Pokemon("Rattata", "/Resource/rattata.png", PokemonType.NORMAL, 5, 0, 80, 90, "Attacco rapido a corto raggio. Difensore iniziale."));
+        unlockedPokemon.add(new Pokemon("Rattata", "/Resource/rattata.png", PokemonType.NORMAL, 4, 0, 75, 85, "Attacco rapido base. Buono all'inizio, ma debole (-40%) contro Roccia."));
     }
 
     public void reset() {
         money = 200;
-        turretPrice = 100;
+        turretsPlaced = 0;
         initStore();
     }
 
@@ -58,16 +58,21 @@ public class Store {
         return money;
     }
 
+    public int getTurretsPlaced() {
+        return turretsPlaced;
+    }
+
     public int getTurretPrice() {
-        return turretPrice;
+        return 100 + (turretsPlaced * 70) + (turretsPlaced * turretsPlaced * 10);
     }
 
     public Turret buyTurret(Coord turretPos, int level) {
-        if (money >= turretPrice) {
+        int price = getTurretPrice();
+        if (money >= price) {
             int x = turretPos.getX();
             int y = turretPos.getY();
-            spend(turretPrice);
-            turretPrice += 50;
+            spend(price);
+            turretsPlaced++;
             return new Turret("/Resource/red_bush.png", x, y, unlockedPokemon);
         }
         return null;

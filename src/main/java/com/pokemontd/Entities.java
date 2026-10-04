@@ -19,7 +19,8 @@ public class Entities {
     final private Group all = new Group(pikas, turretGroup, allTrainers, combatTextGroup);
     final private ArrayList<Trainer> trainers = new ArrayList<Trainer>();
     final private ArrayList<Group> trainersWballs = new ArrayList<Group>();
-    private Integer towerHealth = 1000;
+    private final int MAX_TOWER_HEALTH = 25;
+    private Integer towerHealth = MAX_TOWER_HEALTH;
     private Store store;
 
     public Entities(Store store) {
@@ -79,56 +80,105 @@ public class Entities {
     }
 
     public void createNewTrainer(int level) {
-        Trainer newTrainer = randomTrainer(level);
+        createNewTrainer(level, false);
+    }
+
+    public void createNewTrainer(int level, boolean isBoss) {
+        Trainer newTrainer = isBoss ? createBossTrainer(level) : randomTrainer(level);
         trainers.add(newTrainer);
         trainersWballs.add(newTrainer.getGroup());
         newTrainer.update(newTrainer.getGroup());
         allTrainers.getChildren().add(newTrainer.getGroup());
     }
 
+    public Trainer createBossTrainer(int level) {
+        int bossTier = Math.max(1, level / 5);
+        String name;
+        PokemonType type;
+        int hp;
+
+        switch (bossTier) {
+            case 1: // Wave 5
+                name = "Brock (Capopalestra)";
+                type = PokemonType.ROCK;
+                hp = 280;
+                break;
+            case 2: // Wave 10
+                name = "Misty (Capopalestra)";
+                type = PokemonType.WATER;
+                hp = 750;
+                break;
+            case 3: // Wave 15
+                name = "Lt. Surge (Capopalestra)";
+                type = PokemonType.ELECTRIC;
+                hp = 1800;
+                break;
+            case 4: // Wave 20
+                name = "Erika (Capopalestra)";
+                type = PokemonType.GRASS;
+                hp = 3600;
+                break;
+            case 5: // Wave 25+
+            default:
+                name = "Giovanni (Capo Rocket)";
+                type = PokemonType.ROCK;
+                hp = (int) (6500 + (level - 25) * 450);
+                break;
+        }
+
+        return new Trainer("/Resource/gymleader.png", 202, 800, hp, name, type, 1, true, level);
+    }
+
     public Trainer randomTrainer(int level) {
-        // 5 defined trainer archetypes with elemental types
-        int rand = (int) (Math.random() * 5);
+        int rand = (int) (Math.random() * 6);
         String pic;
         String name;
         PokemonType type;
         int hp;
+        int speed = 1;
 
         switch (rand) {
             case 0:
                 pic = "/Resource/trainer1.png";
                 name = "Pescatore";
                 type = PokemonType.WATER;
-                hp = Math.max(8, 11 * level - 3);
+                hp = (int) (14 + 7 * Math.pow(level, 1.25));
                 break;
             case 1:
                 pic = "/Resource/trainer2.png";
                 name = "Centauro";
                 type = PokemonType.FIRE;
-                hp = Math.max(10, 13 * level - 2);
+                hp = (int) (18 + 9 * Math.pow(level, 1.28));
                 break;
             case 2:
                 pic = "/Resource/trainer3.png";
                 name = "Pigliamosche";
                 type = PokemonType.GRASS;
-                hp = Math.max(6, 9 * level - 2);
+                hp = (int) (10 + 5 * Math.pow(level, 1.22));
+                speed = 2; // Fast runner scout!
                 break;
             case 3:
                 pic = "/Resource/trainer4.png";
                 name = "Marinaio";
                 type = PokemonType.WATER;
-                hp = Math.max(12, 14 * level);
+                hp = (int) (22 + 10 * Math.pow(level, 1.30));
                 break;
             case 4:
+                pic = "/Resource/trainer5.png";
+                name = "Montanaro";
+                type = PokemonType.ROCK; // Rock armor resists Rattata!
+                hp = (int) (24 + 11 * Math.pow(level, 1.30));
+                break;
+            case 5:
             default:
                 pic = "/Resource/trainer5.png";
                 name = "Fantallenatore";
                 type = PokemonType.NORMAL;
-                hp = Math.max(15, 16 * level + 5);
+                hp = (int) (16 + 8 * Math.pow(level, 1.25));
                 break;
         }
 
-        return new Trainer(pic, 202, 800, hp, name, type);
+        return new Trainer(pic, 202, 800, hp, name, type, speed, false, level);
     }
 
     public void attackTrainers() {
@@ -175,13 +225,16 @@ public class Entities {
             trainer.update(trainersWballs.get(k));
 
             if (trainer.getX() < 190 && trainer.getY() < 110) {
-                towerHealth--;
-            }
-            if (trainer.getHealth() < 1) {
+                int dmg = trainer.isBoss() ? 3 : 1;
+                towerHealth = Math.max(0, towerHealth - dmg);
+                SoundManager.playHit();
+                spawnFloatingText(trainer.getX(), trainer.getY() - 15, "-" + dmg + " ❤️ PALESTRA!", Color.RED);
+                dead.add(trainer);
+            } else if (trainer.getHealth() < 1) {
                 dead.add(trainer);
             }
         }
-        // Kill trainers
+        // Remove dead / breached trainers
         for (Trainer t : dead) {
             allTrainers.getChildren().remove(t.getImageView());
             int idx = trainers.indexOf(t);
@@ -191,8 +244,15 @@ public class Entities {
                 trainersWballs.remove(idx);
                 trainers.remove(idx);
             }
-            if (store != null) {
-                store.spend(-50);
+            // Reward bounty only if trainer was defeated
+            if (store != null && t.getHealth() < 1) {
+                int bounty = t.isBoss() ? (150 + t.getLevel() * 15) : (14 + t.getLevel());
+                store.spend(-bounty);
+                spawnFloatingText(t.getX(), t.getY() - 10, "+$" + bounty, Color.GOLD);
+                if (t.isBoss()) {
+                    SoundManager.playWaveStart();
+                    spawnFloatingText(t.getX(), t.getY() - 28, "👑 CAPOPALESTRA SCONFITTO!", Color.GOLD);
+                }
             }
         }
     }
@@ -256,6 +316,10 @@ public class Entities {
         pt.play();
     }
 
+    public int getMaxTowerHealth() {
+        return MAX_TOWER_HEALTH;
+    }
+
     public Integer getTowerHealth() {
         return towerHealth;
     }
@@ -278,6 +342,6 @@ public class Entities {
         turrets.clear();
 
         combatTextGroup.getChildren().clear();
-        towerHealth = 1000;
+        towerHealth = MAX_TOWER_HEALTH;
     }
 }
