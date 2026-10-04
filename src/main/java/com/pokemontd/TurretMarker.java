@@ -6,28 +6,30 @@ public class TurretMarker extends Moveable {
 
 	public TurretMarker(String location, int xstart, int ystart, int speed) {
 		super(location, xstart, ystart, speed);
+		this.getImageView().setMouseTransparent(true);
+		this.getImageView().setVisible(false);
 	}
 
 	public void hover(int x, int y) {
-        Coord grass = grassMap.isPlaceable(new Coord(x, y));
-            // System.out.println("x: " + grass.getX());
-            // System.out.println("y: " + grass.getY());
-            // System.out.println();
-        isHover = (grass.getX() > 0 ? true : false);
-        grassCoord = grass; // combine this with line 11
-        this.setX(grass.getX());
-        this.setY(grass.getY());
-        // store.buyTurret();
-        // turretPrice += 50;
-    }
+		Coord grass = grassMap.isPlaceable(new Coord(x, y));
+		isHover = (grass.getX() > 0);
+		if (isHover) {
+			grassCoord = grass;
+			this.setX(grass.getX());
+			this.setY(grass.getY());
+			this.getImageView().setVisible(true);
+		} else {
+			this.getImageView().setVisible(false);
+		}
+	}
 
-    public boolean isHovering() {
-    	return isHover;
-    }
+	public boolean isHovering() {
+		return isHover;
+	}
 
-    public Coord getGrassCoord() {
-    	return grassCoord;
-    }
+	public Coord getGrassCoord() {
+		return grassCoord;
+	}
 }
 
 

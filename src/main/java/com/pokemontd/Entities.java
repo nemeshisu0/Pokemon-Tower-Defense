@@ -24,6 +24,9 @@ public class Entities {
 
     public Entities(Store store) {
         this.store = store;
+        pikas.setMouseTransparent(true);
+        allTrainers.setMouseTransparent(true);
+        combatTextGroup.setMouseTransparent(true);
     }
 
     public void updateAll() {

@@ -31,6 +31,7 @@ import javafx.geometry.Pos;
 import javafx.geometry.Insets;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.transform.Scale;
 
 public class TowerDefense extends Application {
 
@@ -62,6 +63,7 @@ public class TowerDefense extends Application {
 
     // Game Content & Responsive Wrapper
     final private Group gameContent = new Group();
+    private final Scale gameScale = new Scale(1.0, 1.0, 0, 0);
     private Pane centerGamePane;
     private double currentScale = 1.0;
 
@@ -97,16 +99,18 @@ public class TowerDefense extends Application {
         // GameWindow Backdrop
         backdrop = new Group(background.getImageView(), tower.getImageView());
         backdrop.setEffect(new BoxBlur());
+        tower.getImageView().setMouseTransparent(true);
 
-        // Range Circle
+        // Range Circle (mouse-transparent so it never steals hover/clicks)
         rangeIndicator = new Circle();
         rangeIndicator.setFill(Color.rgb(41, 128, 185, 0.22));
         rangeIndicator.setStroke(Color.rgb(41, 128, 185, 0.85));
         rangeIndicator.setStrokeWidth(1.5);
         rangeIndicator.setVisible(false);
+        rangeIndicator.setMouseTransparent(true);
 
-        // Click to place turret
-        turretMark.getImageView().setOnMouseClicked(e -> {
+        // Click to place turret on grass, or deselect if clicking outside
+        background.getImageView().setOnMouseClicked(e -> {
             if (turretMark.isHovering()) {
                 Coord turretPos = turretMark.getGrassCoord();
                 Turret turret = store.buyTurret(turretPos, 1);
@@ -120,6 +124,8 @@ public class TowerDefense extends Application {
                     selectTurret(turret);
                     updateLabels();
                 }
+            } else {
+                deselectTurret();
             }
         });
 
@@ -144,9 +150,13 @@ public class TowerDefense extends Application {
             }
         });
 
-        // Clicking background deselects turret
-        background.getImageView().setOnMouseClicked(e -> {
-            deselectTurret();
+        // Mouse exited background: cleanly reset hover preview
+        background.getImageView().setOnMouseExited(e -> {
+            turretMark.hover(-9999, -9999);
+            turretMark.update();
+            if (selectedTurret == null) {
+                rangeIndicator.setVisible(false);
+            }
         });
 
         // Top HUD Bar - 2-tier spacious layout with zero overlap
@@ -282,8 +292,10 @@ public class TowerDefense extends Application {
         // Wave Start handler
         startWaveButton.setOnAction(e -> startWave());
 
-        // Setup Main Scalable Container
+        // Setup Main Scalable Container with fixed-origin scaling
         gameContent.getChildren().addAll(gameWindow, mainMenu, pokedexMenu, settingsMenu, gameOverMenu);
+        gameContent.getTransforms().add(gameScale);
+        gameContent.setClip(new Rectangle(0, 0, WIDTH, HEIGHT));
         gameContent.setManaged(false); // Unmanaged so its scaled size does not cause parent resize loops
 
         centerGamePane = new Pane(gameContent) {
@@ -292,16 +304,16 @@ public class TowerDefense extends Application {
                 double w = getWidth();
                 double h = getHeight();
                 if (w > 0 && h > 0) {
-                    double scale = Math.min(w / WIDTH, h / HEIGHT);
-                    scale = Math.max(0.2, scale);
-                    if (Math.abs(scale - currentScale) > 0.001) {
+                    double scale = Math.max(0.2, Math.min(w / WIDTH, h / HEIGHT));
+                    if (Math.abs(scale - currentScale) > 0.0001) {
                         currentScale = scale;
-                        gameContent.setScaleX(scale);
-                        gameContent.setScaleY(scale);
+                        gameScale.setX(scale);
+                        gameScale.setY(scale);
                     }
-                    // Perfect centering
-                    gameContent.setLayoutX((w - WIDTH) / 2.0);
-                    gameContent.setLayoutY((h - HEIGHT) / 2.0);
+                    double contentW = WIDTH * scale;
+                    double contentH = HEIGHT * scale;
+                    gameContent.setLayoutX(Math.floor((w - contentW) / 2.0));
+                    gameContent.setLayoutY(Math.floor((h - contentH) / 2.0));
                 }
             }
         };
